@@ -12,7 +12,7 @@ typedef struct node {
 } node_t;
 
 typedef struct dict {
-  node_t *start;
+  node_t *root;
   node_t *current;
   language_e lang;
 } dict_t;
@@ -30,7 +30,7 @@ node_t *createNode(entry_t *entry) {
 
 void deleteNode(node_t *node) {
   if (node) {
-    if (LOGGING >= VERBOSE) {
+    if (VERBOSE_LOGGING) {
       printf("deleting (%s)\n", entryToString(node->entry, NONE));
     }
     deleteNode(node->left);
@@ -42,7 +42,7 @@ void deleteNode(node_t *node) {
 dict_t *createDict(language_e lang) {
   dict_t *dict = malloc(sizeof(dict_t));
   if (dict) {
-    dict->start = NULL;
+    dict->root = NULL;
     dict->current = NULL;
     dict->lang = lang;
   }
@@ -51,50 +51,61 @@ dict_t *createDict(language_e lang) {
 
 int deleteDict(dict_t *d) {
   if (d) {
-    deleteNode(d->start);
+    deleteNode(d->root);
     free(d);
     return 1;
   }
   return 0;
 }
 
-void resetToRoot(dict_t *d) { d->current = d->start; }
+void resetToRoot(dict_t *d) { d->current = d->root; }
 
-void traverseLeft(dict_t *d, entry_t *e) {
-  if (LOGGING == VERBOSE) {
-    printf("going left with (%s)\n", entryToString(e, d->lang));
-  }
-  d->current = d->current->left;
-}
+void traverseLeft(dict_t *d) { d->current = d->current->left; }
 
-void traverseRight(dict_t *d, entry_t *e) {
-  if (LOGGING == VERBOSE) {
-    printf("going right with (%s)\n", entryToString(e, d->lang));
+void traverseRight(dict_t *d) { d->current = d->current->right; }
+
+void logComparison(entry_t *entry1, entry_t *entry2, int comp,
+                   language_e lang) {
+  char *entry1_str = entryToString(entry1, lang);
+  char *entry2_str = entryToString(entry2, lang);
+  if (comp < 0) {
+    LOG_YELLOW("{");
+    LOG_YELLOW(entry1_str);
+    LOG_YELLOW("} < {");
+    LOG_YELLOW(entry2_str);
+    LOG_YELLOW("}\n");
+  } else if (comp > 0) {
+    LOG_RED("{");
+    LOG_RED(entry1_str);
+    LOG_RED("} > {");
+    LOG_RED(entry2_str);
+    LOG_RED("}\n");
+  } else {
+    LOG("{");
+    LOG(entry1_str);
+    LOG("} = {");
+    LOG(entry2_str);
+    LOG("}\n");
   }
-  d->current = d->current->right;
 }
 
 int insertEntry(dict_t *d, entry_t *e) {
   if (d) {
     node_t *node = createNode(e);
     if (node) {
-      if (!d->start) {
-        d->start = node;
+      if (!d->root) {
+        d->root = node;
         return 1;
       }
       resetToRoot(d);
       int comp;
       while (d->current) {
         comp = compareEntries(e, d->current->entry, d->lang);
-        if (LOGGING == VERBOSE) {
-          printf("comparing (%s) and (%s) yielded %d\n",
-                 entryToString(e, d->lang),
-                 entryToString(d->current->entry, d->lang), comp);
-        }
+        logComparison(e, d->current->entry, comp, d->lang);
         if (comp < 0) {
-          traverseLeft(d, e);
+          traverseLeft(d);
         } else if (comp > 0) {
-          traverseRight(d, e);
+          traverseRight(d);
         } else {
           if (LOGGING) {
             printf("entry already present (%s)\n", entryToString(e, d->lang));
@@ -128,7 +139,7 @@ void printDict(dict_t *d) {
   printf("\n--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
          d->lang == ENGLISH ? "GERMAN" : "ENGLISH");
   if (d) {
-    printNode(d->start, d->lang);
+    printNode(d->root, d->lang);
   }
   printf("------------------------\n\n");
 }
