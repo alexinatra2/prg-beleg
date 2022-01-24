@@ -60,10 +60,6 @@ int deleteDict(dict_t *d) {
 
 void resetToRoot(dict_t *d) { d->current = d->root; }
 
-void traverseLeft(dict_t *d) { d->current = d->current->left; }
-
-void traverseRight(dict_t *d) { d->current = d->current->right; }
-
 void logComparison(entry_t *entry1, entry_t *entry2, int comp,
                    language_e lang) {
   char *entry1_str = entryToString(entry1, lang);
@@ -99,15 +95,25 @@ int insertEntry(dict_t *d, entry_t *e) {
       }
       resetToRoot(d);
       int comp;
+      node_t *intermediate;
       while (d->current) {
+        intermediate = d->current;
         comp = compareEntries(e, d->current->entry, d->lang);
         if (LOGGING) {
           logComparison(e, d->current->entry, comp, d->lang);
         }
         if (comp < 0) {
-          traverseLeft(d);
+          if (!d->current->left) {
+            d->current->left = node;
+            return 1;
+          }
+          d->current = d->current->left;
         } else if (comp > 0) {
-          traverseRight(d);
+          if (!d->current->right) {
+            d->current->right = node;
+            return 1;
+          }
+          d->current = d->current->right;
         } else {
           if (LOGGING) {
             printf("entry already present (%s)\n", entryToString(e, d->lang));
@@ -115,8 +121,6 @@ int insertEntry(dict_t *d, entry_t *e) {
           return 0;
         }
       }
-      d->current = node;
-      return 1;
     }
   }
   return 0;
@@ -131,8 +135,8 @@ int mergeDicts(dict_t *d1, dict_t *d2) { return 0; }
 
 void printNode(node_t *n, language_e lang) {
   if (n && n->entry) {
-    printf("%s\n", entryToString(n->entry, lang));
     printNode(n->left, lang);
+    printf("%s\n", entryToString(n->entry, lang));
     printNode(n->right, lang);
   }
 }
