@@ -101,7 +101,9 @@ int insertEntry(dict_t *d, entry_t *e) {
       int comp;
       while (d->current) {
         comp = compareEntries(e, d->current->entry, d->lang);
-        logComparison(e, d->current->entry, comp, d->lang);
+        if (LOGGING) {
+          logComparison(e, d->current->entry, comp, d->lang);
+        }
         if (comp < 0) {
           traverseLeft(d);
         } else if (comp > 0) {
