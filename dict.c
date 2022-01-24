@@ -59,6 +59,22 @@ int deleteDict(dict_t *d) {
   return 0;
 }
 
+void resetToRoot(dict_t *d) { d->current = d->start; }
+
+void traverseLeft(dict_t *d) {
+  if (LOGGING) {
+    printf("going left");
+  }
+  d->current = d->current->left;
+}
+
+void traverseRight(dict_t *d) {
+  if (LOGGING) {
+    printf("going right");
+  }
+  d->current = d->current->right;
+}
+
 int insertEntry(dict_t *d, entry_t *e) {
   if (d) {
     node_t *node = createNode(e);
@@ -67,20 +83,14 @@ int insertEntry(dict_t *d, entry_t *e) {
         d->start = node;
         return 1;
       }
-      d->current = d->start;
+      resetToRoot(d);
       int comp;
       while (d->current) {
         comp = compareEntries(e, d->current->entry, d->lang);
         if (comp < 0) {
-          if (LOGGING) {
-            printf("going left with (%s)\n", entryToString(e, d->lang));
-          }
-          d->current = d->current->left;
+          traverseLeft(d);
         } else if (comp > 0) {
-          if (LOGGING) {
-            printf("going right with (%s)\n", entryToString(e, d->lang));
-          }
-          d->current = d->current->right;
+          traverseRight(d);
         } else {
           if (LOGGING) {
             printf("entry already present (%s)\n", entryToString(e, d->lang));
