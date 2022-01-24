@@ -1,4 +1,5 @@
 #include "dict.h"
+#include <stdlib.h>
 
 typedef struct node {
   entry_t *entry;
@@ -13,7 +14,7 @@ typedef struct dict {
   language_e lang;
 } dict_t;
 
-dict_t createDict(language_e) { return NULL; }
+dict_t *createDict(language_e lang) { return NULL; }
 int deleteDict(dict_t *d) { return 0; }
 
 int insertEntry(dict_t *d, entry_t *e) { return 0; }

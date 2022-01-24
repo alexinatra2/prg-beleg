@@ -4,7 +4,7 @@ typedef enum { GERMAN, ENGLISH } language_e;
 typedef struct node node_t;
 typedef struct dict dict_t;
 
-dict_t createDict(language_e);
+dict_t *createDict(language_e);
 int deleteDict(dict_t *d);
 
 int insertEntry(dict_t *d, entry_t *e);
