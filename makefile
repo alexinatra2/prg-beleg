@@ -1,2 +1,2 @@
-dict: dict.c dictExpInp.c entry.c
+dict: $(wildcard %.c)
 	gcc -o $@ $^
