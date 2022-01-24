@@ -12,8 +12,8 @@ int deleteDict(dict_t *d);
 int insertEntry(dict_t *d, entry_t *e);
 int removeEntry(dict_t *d, entry_t *e);
 
-int insertEntryByWords(dict_t *d, char *g, char *e);
-int removeEntryByWords(dict_t *d, char *g, char *e);
+int insertEntryStr(dict_t *d, char *g, char *e);
+int removeEntryStr(dict_t *d, char *g, char *e);
 
 int mergeDicts(dict_t *d1, dict_t *d2);
 

@@ -128,8 +128,13 @@ int insertEntry(dict_t *d, entry_t *e) {
 
 int removeEntry(dict_t *d, entry_t *e) { return 0; }
 
-int insertEntryByWords(dict_t *d, char *g, char *e) { return 0; }
-int removeEntryByWords(dict_t *d, char *g, char *e) { return 0; }
+int insertEntryStr(dict_t *d, char *g, char *e) {
+  return insertEntry(d, createEntry(g, e));
+}
+
+int removeEntryStr(dict_t *d, char *g, char *e) {
+  return removeEntry(d, createEntry(g, e));
+}
 
 int mergeDicts(dict_t *d1, dict_t *d2) { return 0; }
 
