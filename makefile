@@ -1,2 +1,2 @@
-dict: $(wildcard %.c)
+dict: $(wildcard *.c)
 	gcc -o $@ $^

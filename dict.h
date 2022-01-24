@@ -1,6 +1,5 @@
 #include "entry.h"
 
-typedef enum { GERMAN, ENGLISH } language_e;
 typedef struct node node_t;
 typedef struct dict dict_t;
 
