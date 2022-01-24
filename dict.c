@@ -61,16 +61,16 @@ int deleteDict(dict_t *d) {
 
 void resetToRoot(dict_t *d) { d->current = d->start; }
 
-void traverseLeft(dict_t *d) {
+void traverseLeft(dict_t *d, entry_t *e) {
   if (LOGGING) {
-    printf("going left");
+    printf("going left with (%s)\n", entryToString(e, d->lang));
   }
   d->current = d->current->left;
 }
 
-void traverseRight(dict_t *d) {
+void traverseRight(dict_t *d, entry_t *e) {
   if (LOGGING) {
-    printf("going right");
+    printf("going right with (%s)\n", entryToString(e, d->lang));
   }
   d->current = d->current->right;
 }
@@ -87,10 +87,15 @@ int insertEntry(dict_t *d, entry_t *e) {
       int comp;
       while (d->current) {
         comp = compareEntries(e, d->current->entry, d->lang);
+        if (LOGGING) {
+          printf("comparing (%s) and (%s) yielded %d\n",
+                 entryToString(e, d->lang),
+                 entryToString(d->current->entry, d->lang), comp);
+        }
         if (comp < 0) {
-          traverseLeft(d);
+          traverseLeft(d, e);
         } else if (comp > 0) {
-          traverseRight(d);
+          traverseRight(d, e);
         } else {
           if (LOGGING) {
             printf("entry already present (%s)\n", entryToString(e, d->lang));
@@ -121,10 +126,10 @@ void printNode(node_t *n, language_e lang) {
 }
 
 void printDict(dict_t *d) {
-  printf("--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
+  printf("\n--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
          d->lang == ENGLISH ? "GERMAN" : "ENGLISH");
   if (d) {
     printNode(d->start, d->lang);
   }
-  printf("------------------------\n");
+  printf("------------------------\n\n");
 }
