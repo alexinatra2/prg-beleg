@@ -1,9 +1,8 @@
 #include "dict.h"
 #include "entry.h"
+#include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-extern int LOGGING;
 
 typedef struct node {
   entry_t *entry;
@@ -31,7 +30,7 @@ node_t *createNode(entry_t *entry) {
 
 void deleteNode(node_t *node) {
   if (node) {
-    if (LOGGING) {
+    if (LOGGING >= VERBOSE) {
       printf("deleting (%s)\n", entryToString(node->entry, NONE));
     }
     deleteNode(node->left);
@@ -62,14 +61,14 @@ int deleteDict(dict_t *d) {
 void resetToRoot(dict_t *d) { d->current = d->start; }
 
 void traverseLeft(dict_t *d, entry_t *e) {
-  if (LOGGING) {
+  if (LOGGING == VERBOSE) {
     printf("going left with (%s)\n", entryToString(e, d->lang));
   }
   d->current = d->current->left;
 }
 
 void traverseRight(dict_t *d, entry_t *e) {
-  if (LOGGING) {
+  if (LOGGING == VERBOSE) {
     printf("going right with (%s)\n", entryToString(e, d->lang));
   }
   d->current = d->current->right;
@@ -87,7 +86,7 @@ int insertEntry(dict_t *d, entry_t *e) {
       int comp;
       while (d->current) {
         comp = compareEntries(e, d->current->entry, d->lang);
-        if (LOGGING) {
+        if (LOGGING == VERBOSE) {
           printf("comparing (%s) and (%s) yielded %d\n",
                  entryToString(e, d->lang),
                  entryToString(d->current->entry, d->lang), comp);

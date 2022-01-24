@@ -1,9 +1,8 @@
 #include "entry.h"
+#include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-extern int LOGGING;
 
 typedef struct entry {
   char *german;

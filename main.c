@@ -1,10 +1,8 @@
 #include "dict.h"
 #include "entry.h"
+#include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-int LOGGING = 1;
 
 int main(int argc, char **argv) {
   entry_t *entry1 = createEntry("hallo", "hello");
