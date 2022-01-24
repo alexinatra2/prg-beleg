@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern int LOGGING;
+
 typedef struct node {
   entry_t *entry;
   struct node *left;
@@ -28,7 +30,9 @@ node_t *createNode(entry_t *entry, node_t *left, node_t *right) {
 
 void deleteNode(node_t *node) {
   if (node) {
-    printf("deleting (%s)", entryToString(node->entry, NONE));
+    if (LOGGING) {
+      printf("deleting (%s)", entryToString(node->entry, NONE));
+    }
     deleteNode(node->left);
     deleteNode(node->right);
     free(node);

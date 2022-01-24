@@ -1,3 +1,6 @@
+#ifndef DICT
+#define DICT
+
 #include "entry.h"
 
 typedef struct node node_t;
@@ -15,3 +18,5 @@ int removeEntryByWords(dict_t *d, char *g, char *e);
 int mergeDicts(dict_t *d1, dict_t *d2);
 
 void printDict(dict_t *d);
+
+#endif // !DICT

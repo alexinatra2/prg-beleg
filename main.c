@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int LOGGING = 1;
+
 int main(int argc, char **argv) {
   entry_t *entry = createEntry("hallo", "hello");
 
