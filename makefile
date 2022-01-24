@@ -1,2 +1,4 @@
+FLAGS := -g
+
 dict: $(wildcard *.c)
-	gcc -o $@ $^
+	gcc -o $@ $^ $(FLAGS)
