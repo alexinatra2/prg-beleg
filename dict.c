@@ -136,7 +136,14 @@ int removeEntryStr(dict_t *d, char *g, char *e) {
   return removeEntry(d, createEntry(g, e));
 }
 
-int mergeDicts(dict_t *d1, dict_t *d2) { return 0; }
+int insertNodes(dict_t *d, node_t *n) {
+  return (!n->left || insertNodes(d, n->left)) && insertEntry(d, n->entry) &&
+         (!n->right || insertNodes(d, n->right));
+}
+
+int mergeDicts(dict_t *d1, dict_t *d2) {
+  return d1 && d2 ? insertNodes(d1, d2->root) : 0;
+}
 
 void printNode(node_t *n, language_e lang) {
   if (n && n->entry) {

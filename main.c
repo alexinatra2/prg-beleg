@@ -5,21 +5,27 @@
 #include <stdlib.h>
 
 int main(int argc, char **argv) {
-  entry_t *entry1 = createEntry("hallo", "hello");
-  entry_t *entry2 = createEntry("welt", "world");
-  entry_t *entry3 = createEntry("mann", "man");
-  entry_t *entry4 = createEntry("frau", "woman");
-  entry_t *entry5 = createEntry("kind", "child");
+  dict_t *dict1 = createDict(GERMAN);
+  insertEntryStr(dict1, "bauernhof", "farm");
+  insertEntryStr(dict1, "ritter", "knight");
+  insertEntryStr(dict1, "nacht", "night");
+  insertEntryStr(dict1, "tag", "day");
+  insertEntryStr(dict1, "jahr", "year");
 
-  dict_t *dict = createDict(GERMAN);
-  insertEntry(dict, entry1);
-  insertEntry(dict, entry2);
-  insertEntry(dict, entry3);
-  insertEntry(dict, entry4);
-  insertEntry(dict, entry5);
+  printDict(dict1);
 
-  printDict(dict);
+  dict_t *dict2 = createDict(GERMAN);
+  insertEntryStr(dict2, "hallo", "hello");
+  insertEntryStr(dict2, "welt", "world");
+  insertEntryStr(dict2, "mann", "man");
+  insertEntryStr(dict2, "frau", "woman");
+  insertEntryStr(dict2, "kind", "child");
 
-  deleteDict(dict);
+  printDict(dict2);
+
+  mergeDicts(dict1, dict2);
+  printDict(dict1);
+
+  deleteDict(dict2);
   return 0;
 }
