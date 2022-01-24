@@ -17,12 +17,12 @@ typedef struct dict {
   language_e lang;
 } dict_t;
 
-node_t *createNode(entry_t *entry, node_t *left, node_t *right) {
+node_t *createNode(entry_t *entry) {
   node_t *node = malloc(sizeof(node_t));
   if (node) {
     node->entry = entry;
-    node->left = left;
-    node->right = right;
+    node->left = NULL;
+    node->right = NULL;
     node->balance_factor = 0;
   }
   return node;
@@ -58,7 +58,19 @@ int deleteDict(dict_t *d) {
   return 0;
 }
 
-int insertEntry(dict_t *d, entry_t *e) { return 0; }
+int insertEntry(dict_t *d, entry_t *e) {
+  if (d) {
+    node_t *node = createNode(e);
+    if (node) {
+      d->current = d->start;
+      while (d->current) {
+      }
+      return 1;
+    }
+  }
+  return 0;
+}
+
 int removeEntry(dict_t *d, entry_t *e) { return 0; }
 
 int insertEntryByWords(dict_t *d, char *g, char *e) { return 0; }

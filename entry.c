@@ -25,6 +25,28 @@ int deleteEntry(entry_t *entry) {
   return 0;
 }
 
+int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
+  if (!entry1) {
+    return -1;
+  }
+  if (!entry2) {
+    return 1;
+  }
+  int comp;
+  switch (lang) {
+  case GERMAN:
+    return (comp = strcmp(entry1->german, entry2->german)
+                       ? comp
+                       : strcmp(entry2->english, entry2->english));
+  case ENGLISH:
+    return (comp = strcmp(entry2->english, entry2->english)
+                       ? comp
+                       : strcmp(entry1->german, entry2->german));
+  default:
+    return 0;
+  }
+}
+
 char *entryToString(entry_t *entry, language_e lang) {
   if (entry) {
     // strlen("entry1 : entry2") + terminating 0-byte
