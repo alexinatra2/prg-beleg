@@ -1,4 +1,5 @@
 #include "dict.h"
+#include "entry.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +32,7 @@ node_t *createNode(entry_t *entry) {
 void deleteNode(node_t *node) {
   if (node) {
     if (LOGGING) {
-      printf("deleting (%s)", entryToString(node->entry, NONE));
+      printf("deleting (%s)\n", entryToString(node->entry, NONE));
     }
     deleteNode(node->left);
     deleteNode(node->right);
@@ -62,9 +63,32 @@ int insertEntry(dict_t *d, entry_t *e) {
   if (d) {
     node_t *node = createNode(e);
     if (node) {
-      d->current = d->start;
-      while (d->current) {
+      if (!d->start) {
+        d->start = node;
+        return 1;
       }
+      d->current = d->start;
+      int comp;
+      while (d->current) {
+        comp = compareEntries(e, d->current->entry, d->lang);
+        if (comp < 0) {
+          if (LOGGING) {
+            printf("going left with (%s)\n", entryToString(e, d->lang));
+          }
+          d->current = d->current->left;
+        } else if (comp > 0) {
+          if (LOGGING) {
+            printf("going right with (%s)\n", entryToString(e, d->lang));
+          }
+          d->current = d->current->right;
+        } else {
+          if (LOGGING) {
+            printf("entry already present (%s)\n", entryToString(e, d->lang));
+          }
+          return 0;
+        }
+      }
+      d->current = node;
       return 1;
     }
   }
@@ -78,4 +102,19 @@ int removeEntryByWords(dict_t *d, char *g, char *e) { return 0; }
 
 int mergeDicts(dict_t *d1, dict_t *d2) { return 0; }
 
-void printDict(dict_t *d) {}
+void printNode(node_t *n, language_e lang) {
+  if (n && n->entry) {
+    printf("%s\n", entryToString(n->entry, lang));
+    printNode(n->left, lang);
+    printNode(n->right, lang);
+  }
+}
+
+void printDict(dict_t *d) {
+  printf("--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
+         d->lang == ENGLISH ? "GERMAN" : "ENGLISH");
+  if (d) {
+    printNode(d->start, d->lang);
+  }
+  printf("------------------------\n");
+}
