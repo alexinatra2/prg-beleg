@@ -1,4 +1,5 @@
 #include "dict.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct node {
@@ -14,8 +15,44 @@ typedef struct dict {
   language_e lang;
 } dict_t;
 
-dict_t *createDict(language_e lang) { return NULL; }
-int deleteDict(dict_t *d) { return 0; }
+node_t *createNode(entry_t *entry, node_t *left, node_t *right) {
+  node_t *node = malloc(sizeof(node_t));
+  if (node) {
+    node->entry = entry;
+    node->left = left;
+    node->right = right;
+    node->balance_factor = 0;
+  }
+  return node;
+}
+
+void deleteNode(node_t *node) {
+  if (node) {
+    printf("deleting (%s)", entryToString(node->entry, NONE));
+    deleteNode(node->left);
+    deleteNode(node->right);
+    free(node);
+  }
+}
+
+dict_t *createDict(language_e lang) {
+  dict_t *dict = malloc(sizeof(dict_t));
+  if (dict) {
+    dict->start = NULL;
+    dict->current = NULL;
+    dict->lang = lang;
+  }
+  return dict;
+}
+
+int deleteDict(dict_t *d) {
+  if (d) {
+    deleteNode(d->start);
+    free(d);
+    return 1;
+  }
+  return 0;
+}
 
 int insertEntry(dict_t *d, entry_t *e) { return 0; }
 int removeEntry(dict_t *d, entry_t *e) { return 0; }

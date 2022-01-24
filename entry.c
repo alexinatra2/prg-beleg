@@ -35,6 +35,7 @@ char *entryToString(entry_t *entry, language_e lang) {
         sprintf(str, "%s : %s", entry->german, entry->english);
         break;
       case ENGLISH:
+      default:
         sprintf(str, "%s : %s", entry->english, entry->german);
       }
     }

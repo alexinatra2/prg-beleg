@@ -5,6 +5,7 @@
 int main(int argc, char **argv) {
   entry_t *entry = createEntry("hallo", "hello");
 
-  printf("%s\n", entryToString(entry, GERMAN));
+  dict_t *dict = createDict(GERMAN);
+  deleteDict(dict);
   return 0;
 }

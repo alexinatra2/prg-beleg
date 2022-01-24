@@ -1,4 +1,4 @@
-typedef enum { GERMAN, ENGLISH } language_e;
+typedef enum { NONE, GERMAN, ENGLISH } language_e;
 typedef struct entry entry_t;
 
 entry_t *createEntry(char *g, char *e);
