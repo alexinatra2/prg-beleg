@@ -39,6 +39,15 @@ void deleteNode(node_t *node) {
   }
 }
 
+void deleteOneNode(node_t *node) {
+  if (node) {
+    if (VERBOSE_LOGGING) {
+      printf("deleting (%s)\n", entryToString(node->entry, NONE));
+    }
+    free(node);
+  }
+}
+
 dict_t *createDict(language_e lang) {
   dict_t *dict = malloc(sizeof(dict_t));
   if (dict) {
@@ -126,7 +135,66 @@ int insertEntry(dict_t *d, entry_t *e) {
   return 0;
 }
 
-int removeEntry(dict_t *d, entry_t *e) { return 0; }
+int replaceDirectionalSuccessor(dict_t *t, int direction) {
+  printf("trying to replace %s\n", direction < 0 ? "left" : "right");
+  return 0;
+}
+int replaceRoot(dict_t *d) {
+  if (d && d->root) {
+    node_t *former_root = d->root;
+    if (!d->root->right) {
+      d->root = d->root->left;
+    } else {
+      d->root = d->root->right;
+      node_t *former_left = d->root->left;
+      d->root->left = former_root->left;
+      if (d->root->right) {
+        d->current = d->root->right;
+        while (d->current->left) {
+          printf("I'm here\n");
+          d->current = d->current->left;
+        }
+        d->current->left = former_left;
+      } else {
+        if (!d->root->left) {
+          d->root->left = former_left;
+        } else {
+          d->current = d->root->left;
+          while (d->current->right) {
+            d->current = d->current->right;
+          }
+          d->current->right = former_left;
+        }
+      }
+    }
+    deleteOneNode(former_root);
+  }
+  return 0;
+}
+
+int removeEntry(dict_t *d, entry_t *e) {
+  if (d && e) {
+    resetToRoot(d);
+    int comp = compareEntries(e, d->current->entry, d->lang);
+    if (!comp) {
+      return replaceRoot(d);
+    }
+    int prev_comp;
+    node_t *next_node;
+    while (comp && d->current) {
+      prev_comp = comp;
+      next_node = (comp < 0) ? d->current->left : d->current->right;
+      if (next_node) {
+        comp = compareEntries(e, next_node->entry, d->lang);
+        if (!comp) {
+          return replaceDirectionalSuccessor(d, prev_comp);
+        }
+      }
+      d->current = next_node;
+    }
+  }
+  return 0;
+}
 
 int insertEntryStr(dict_t *d, char *g, char *e) {
   return insertEntry(d, createEntry(g, e));
@@ -136,6 +204,7 @@ int removeEntryStr(dict_t *d, char *g, char *e) {
   return removeEntry(d, createEntry(g, e));
 }
 
+// --- prg1-beleg --- utility function for importing dictionaries into one
 int insertNodes(dict_t *d, node_t *n) {
   return (!n->left || insertNodes(d, n->left)) && insertEntry(d, n->entry) &&
          (!n->right || insertNodes(d, n->right));

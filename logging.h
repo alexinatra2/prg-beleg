@@ -1,8 +1,8 @@
 #ifndef __LOG
 #define __LOG
 
-#define LOGGING 1
-#define VERBOSE_LOGGING 1
+#define LOGGING 0
+#define VERBOSE_LOGGING 0
 
 #define LOG(x) printf("%s", x)
 #define LOG_YELLOW(x) printf("\033[0;33m%s\033[0m", x)
