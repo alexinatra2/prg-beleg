@@ -204,6 +204,15 @@ int removeEntryStr(dict_t *d, char *g, char *e) {
   return removeEntry(d, createEntry(g, e));
 }
 
+int max(int x, int y) { return x < y ? y : x; }
+
+int currentDepthOfNode(node_t *n) {
+  return n ? max(currentDepthOfNode(n->left), currentDepthOfNode(n->right)) + 1
+           : 0;
+}
+
+int currentDepth(dict_t *d) { return currentDepthOfNode(d->root); }
+
 // --- prg1-beleg --- utility function for importing dictionaries into one
 int insertNodes(dict_t *d, node_t *n) {
   return (!n->left || insertNodes(d, n->left)) && insertEntry(d, n->entry) &&

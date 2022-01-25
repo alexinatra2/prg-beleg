@@ -3,7 +3,6 @@
 
 #include "entry.h"
 
-typedef struct node node_t;
 typedef struct dict dict_t;
 
 dict_t *createDict(language_e);
@@ -16,6 +15,7 @@ int insertEntryStr(dict_t *d, char *g, char *e);
 int removeEntryStr(dict_t *d, char *g, char *e);
 
 int mergeDicts(dict_t *d1, dict_t *d2);
+int currentDepth(dict_t *d);
 
 void printDict(dict_t *d);
 
