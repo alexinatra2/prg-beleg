@@ -10,6 +10,7 @@ typedef struct node {
 } node_t;
 
 typedef struct dict {
+  int id;
   node_t *start;
   node_t *current;
   language_e lang;
@@ -24,12 +25,23 @@ node_t *createNode(entry_t *entry, node_t *next) {
   return node;
 }
 
-void deleteNode(node_t *node) {
-  if (node) {
+void deleteNodes(dict_t *dict, node_t *node) {
+  if (dict && node) {
     if (VERBOSE_LOGGING) {
-      printf("deleting (%s)\n", entryToString(node->entry, NONE));
+      printf("dict %d: deleting (%s)\n", dict->id,
+             entryToString(node->entry, NONE));
     }
-    deleteNode(node->next);
+    deleteNodes(dict, node->next);
+    free(node);
+  }
+}
+
+void deleteNode(dict_t *dict, node_t *node) {
+  if (dict && node) {
+    if (VERBOSE_LOGGING) {
+      printf("dict %d: deleting (%s)\n", dict->id,
+             entryToString(node->entry, NONE));
+    }
     free(node);
   }
 }
@@ -40,13 +52,15 @@ dict_t *createDict(language_e lang) {
     dict->start = NULL;
     dict->current = NULL;
     dict->lang = lang;
+    static int id_counter = 1;
+    dict->id = id_counter++;
   }
   return dict;
 }
 
 int deleteDict(dict_t *d) {
   if (d) {
-    deleteNode(d->start);
+    deleteNodes(d, d->start);
     free(d);
     return 1;
   }
@@ -54,31 +68,6 @@ int deleteDict(dict_t *d) {
 }
 
 void resetToRoot(dict_t *d) { d->current = d->start; }
-
-void logComparison(entry_t *entry1, entry_t *entry2, int comp,
-                   language_e lang) {
-  char *entry1_str = entryToString(entry1, lang);
-  char *entry2_str = entryToString(entry2, lang);
-  if (comp < 0) {
-    LOG_YELLOW("{");
-    LOG_YELLOW(entry1_str);
-    LOG_YELLOW("} < {");
-    LOG_YELLOW(entry2_str);
-    LOG_YELLOW("}\n");
-  } else if (comp > 0) {
-    LOG_RED("{");
-    LOG_RED(entry1_str);
-    LOG_RED("} > {");
-    LOG_RED(entry2_str);
-    LOG_RED("}\n");
-  } else {
-    LOG("{");
-    LOG(entry1_str);
-    LOG("} = {");
-    LOG(entry2_str);
-    LOG("}\n");
-  }
-}
 
 int insertEntry(dict_t *d, entry_t *e) {
   if (!d || !e) {
@@ -108,7 +97,30 @@ int insertEntry(dict_t *d, entry_t *e) {
   return comp != 0;
 }
 
-int removeEntry(dict_t *d, entry_t *e) { return 0; }
+int removeEntry(dict_t *d, entry_t *e) {
+  if (!d || !e || !d->start) {
+    return 0;
+  }
+  int comp = compareEntries(e, d->start->entry, d->lang);
+  node_t *previous;
+  if (!comp) {
+    previous = d->start;
+    d->start = d->start->next;
+    deleteNode(d, previous);
+  } else {
+    resetToRoot(d);
+    do {
+      previous = d->current;
+      d->current = d->current->next;
+      comp = d->current ? compareEntries(e, d->current->entry, d->lang) : -1;
+    } while (comp > 0);
+    if (!comp) {
+      previous->next = d->current->next;
+      deleteNode(d, d->current);
+    }
+  }
+  return !comp;
+}
 
 int insertEntryStr(dict_t *d, char *g, char *e) {
   return insertEntry(d, createEntry(g, e));
@@ -134,7 +146,8 @@ void printNode(node_t *n, language_e lang) {
 }
 
 void printDict(dict_t *d) {
-  printf("\n--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
+  printf("\ndict %d:\n", d->id);
+  printf("--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
          d->lang == ENGLISH ? "GERMAN" : "ENGLISH");
   if (d) {
     printNode(d->start, d->lang);

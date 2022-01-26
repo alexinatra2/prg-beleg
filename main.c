@@ -24,8 +24,12 @@ int main(int argc, char **argv) {
   printDict(dict2);
 
   mergeDicts(dict1, dict2);
+
+  removeEntryStr(dict1, "frau", "woman");
+
   printDict(dict1);
 
+  deleteDict(dict1);
   deleteDict(dict2);
   return 0;
 }
