@@ -3,7 +3,6 @@
 
 #include "entry.h"
 
-typedef struct node node_t;
 typedef struct dict dict_t;
 
 dict_t *createDict(language_e);
