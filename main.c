@@ -14,7 +14,6 @@ int main(int argc, char **argv) {
   insertEntryStr(dict1, "jahr", "year");
 
   printf("depth of dict1: %d\n", currentDepth(dict1));
-
   printDict(dict1);
 
   dict_t *dict2 = createDict(ENGLISH);
@@ -28,13 +27,12 @@ int main(int argc, char **argv) {
   removeEntryStr(dict2, "welt", "world");
 
   printf("depth of dict2: %d\n", currentDepth(dict2));
-
   printDict(dict2);
 
   mergeDicts(dict1, dict2);
-  printDict(dict1);
 
   printf("depth of dict1: %d\n", currentDepth(dict1));
+  printDict(dict1);
 
   deleteDict(dict1);
   deleteDict(dict2);

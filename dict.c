@@ -135,10 +135,15 @@ int insertEntry(dict_t *d, entry_t *e) {
   return 0;
 }
 
-int replaceDirectionalSuccessor(dict_t *t, int direction) {
-  printf("trying to replace %s\n", direction < 0 ? "left" : "right");
+int replaceDirectionalSuccessor(dict_t *d, int direction) {
+  if (d) {
+    if (direction < 0) {
+    } else {
+    }
+  }
   return 0;
 }
+
 int replaceRoot(dict_t *d) {
   if (d && d->root) {
     node_t *former_root = d->root;
@@ -151,7 +156,6 @@ int replaceRoot(dict_t *d) {
       if (d->root->right) {
         d->current = d->root->right;
         while (d->current->left) {
-          printf("I'm here\n");
           d->current = d->current->left;
         }
         d->current->left = former_left;
@@ -168,6 +172,7 @@ int replaceRoot(dict_t *d) {
       }
     }
     deleteOneNode(former_root);
+    return 1;
   }
   return 0;
 }
