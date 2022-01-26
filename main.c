@@ -1,6 +1,4 @@
 #include "dict.h"
-#include "entry.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char **argv) {
