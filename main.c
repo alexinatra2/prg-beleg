@@ -25,8 +25,6 @@ int main(int argc, char **argv) {
 
   mergeDicts(dict1, dict2);
 
-  removeEntryStr(dict1, "frau", "woman");
-
   printDict(dict1);
 
   deleteDict(dict1);

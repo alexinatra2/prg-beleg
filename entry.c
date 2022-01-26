@@ -31,6 +31,8 @@ int deleteEntry(entry_t *entry) {
   }
   return 0;
 }
+int getGermanLength(entry_t *e) { return strlen(e->german); }
+int getEnglishLength(entry_t *e) { return strlen(e->english); }
 
 int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   if (!entry1) {
@@ -65,16 +67,27 @@ int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
 
 char *entryToString(entry_t *entry, language_e lang) {
   if (entry) {
-    // strlen("entry1 : entry2") + terminating 0-byte
-    char *str = malloc(strlen(entry->german) + strlen(entry->english) + 4);
+    return formattedEntryToString(entry, lang, strlen(entry->german),
+                                  strlen(entry->english));
+  }
+  return NULL;
+}
+
+char *formattedEntryToString(entry_t *entry, language_e lang, int g_format,
+                             int e_format) {
+  if (entry) {
+    // strlen("entry1 | entry2") + terminating 0-byte
+    char *str = malloc(e_format + g_format + 4);
     if (str) {
       switch (lang) {
       case GERMAN:
-        sprintf(str, "%s : %s", entry->german, entry->english);
+        sprintf(str, "%-*s | %-*s", g_format, entry->german, e_format,
+                entry->english);
         break;
       case ENGLISH:
       default:
-        sprintf(str, "%s : %s", entry->english, entry->german);
+        sprintf(str, "%-*s | %-*s", g_format, entry->english, e_format,
+                entry->german);
       }
     }
     return str;

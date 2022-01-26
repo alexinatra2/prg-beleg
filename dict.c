@@ -3,6 +3,10 @@
 #include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define GERMAN_STR "GERMAN"
+#define ENGLISH_STR "ENGLISH"
 
 typedef struct node {
   entry_t *entry;
@@ -11,6 +15,8 @@ typedef struct node {
 
 typedef struct dict {
   int id;
+  int g_format;
+  int e_format;
   node_t *start;
   node_t *current;
   language_e lang;
@@ -138,19 +144,51 @@ int mergeDicts(dict_t *d1, dict_t *d2) {
   return d1 && d2 ? insertNodes(d1, d2->start) : 0;
 }
 
-void printNode(node_t *n, language_e lang) {
+void printNode(node_t *n, language_e lang, int g_format, int e_format) {
   if (n && n->entry) {
-    printf("%s\n", entryToString(n->entry, lang));
-    printNode(n->next, lang);
+    printf("| %s |\n",
+           formattedEntryToString(n->entry, lang, g_format, e_format));
+    printNode(n->next, lang, g_format, e_format);
+  }
+}
+
+void updateFormat(dict_t *d) {
+  if (d) {
+    resetToRoot(d);
+    d->g_format = strlen(GERMAN_STR);
+    d->e_format = strlen(ENGLISH_STR);
+    int ger_current;
+    int eng_current;
+    while (d->current) {
+      ger_current = getGermanLength(d->current->entry);
+      eng_current = getEnglishLength(d->current->entry);
+      d->g_format = d->g_format > ger_current ? d->g_format : ger_current;
+      d->e_format = d->e_format > eng_current ? d->e_format : eng_current;
+      d->current = d->current->next;
+    }
+  }
+}
+
+void printTableSeparator(dict_t *d) {
+  if (d) {
+    for (int i = 0; i < d->g_format + d->e_format + 7; i++) {
+      printf("-");
+    }
+    printf("\n");
   }
 }
 
 void printDict(dict_t *d) {
   printf("\ndict %d:\n", d->id);
-  printf("--- %s - %s ---\n", d->lang == GERMAN ? "GERMAN" : "ENGLISH",
-         d->lang == ENGLISH ? "GERMAN" : "ENGLISH");
+  updateFormat(d);
+  printTableSeparator(d);
+  printf("| %-*s | %-*s |\n", d->lang == GERMAN ? d->g_format : d->e_format,
+         d->lang == GERMAN ? GERMAN_STR : ENGLISH_STR,
+         d->lang == GERMAN ? d->e_format : d->g_format,
+         d->lang == ENGLISH ? GERMAN_STR : ENGLISH_STR);
+  printTableSeparator(d);
   if (d) {
-    printNode(d->start, d->lang);
+    printNode(d->start, d->lang, d->g_format, d->e_format);
   }
-  printf("------------------------\n\n");
+  printTableSeparator(d);
 }
