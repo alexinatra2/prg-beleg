@@ -81,29 +81,31 @@ void logComparison(entry_t *entry1, entry_t *entry2, int comp,
 }
 
 int insertEntry(dict_t *d, entry_t *e) {
-  if (d && e) {
-    if (!d->start) {
-      d->start = createNode(e, NULL);
-      return 1;
-    }
-    int comp = compareEntries(e, d->start->entry, d->lang);
-    if (comp < 0) {
-      d->start = createNode(e, d->start);
-    } else {
-      resetToRoot(d);
-      node_t *previous;
-      do {
-        previous = d->current;
-        d->current = d->current->next;
-        comp = d->current ? compareEntries(e, d->current->entry, d->lang) : -1;
-      } while (comp > 0);
-      if (comp) {
-        previous->next = createNode(e, d->current);
-      }
-    }
-    return comp != 0;
+  if (!d || !e) {
+    return 0;
   }
-  return 0;
+  if (!d->start) {
+    d->start = createNode(e, NULL);
+    return 1;
+  }
+  int comp = compareEntries(e, d->start->entry, d->lang);
+  if (comp < 0) {
+    d->start = createNode(e, d->start);
+  } else {
+    resetToRoot(d);
+    node_t *previous;
+    // first iteration always works, as initially d->current = d->start
+    // and d->start has been proven to exist
+    do {
+      previous = d->current;
+      d->current = d->current->next;
+      comp = d->current ? compareEntries(e, d->current->entry, d->lang) : -1;
+    } while (comp > 0);
+    if (comp) {
+      previous->next = createNode(e, d->current);
+    }
+  }
+  return comp != 0;
 }
 
 int removeEntry(dict_t *d, entry_t *e) { return 0; }
@@ -116,7 +118,9 @@ int removeEntryStr(dict_t *d, char *g, char *e) {
   return removeEntry(d, createEntry(g, e));
 }
 
-int insertNodes(dict_t *d, node_t *n) { return 0; }
+int insertNodes(dict_t *d, node_t *n) {
+  return !n || (insertEntry(d, n->entry) && insertNodes(d, n->next));
+}
 
 int mergeDicts(dict_t *d1, dict_t *d2) {
   return d1 && d2 ? insertNodes(d1, d2->start) : 0;

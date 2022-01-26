@@ -15,11 +15,11 @@ int main(int argc, char **argv) {
   printDict(dict1);
 
   dict_t *dict2 = createDict(GERMAN);
-  insertEntryStr(dict2, "hallo", "hello");
-  insertEntryStr(dict2, "welt", "world");
-  insertEntryStr(dict2, "mann", "man");
-  insertEntryStr(dict2, "frau", "woman");
-  insertEntryStr(dict2, "kind", "child");
+  printf("%d\n", insertEntryStr(dict2, "hallo", "hello") &&
+                     insertEntryStr(dict2, "welt", "world") &&
+                     insertEntryStr(dict2, "mann", "man") &&
+                     insertEntryStr(dict2, "frau", "woman") &&
+                     insertEntryStr(dict2, "kind", "child"));
 
   printDict(dict2);
 
