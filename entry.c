@@ -11,14 +11,8 @@ typedef struct entry {
 entry_t *createEntry(char *g, char *e) {
   entry_t *entry = malloc(sizeof(entry_t));
   if (entry) {
-    entry->german = malloc(strlen(g) + 1);
-    if (entry->german) {
-      strcpy(entry->german, g);
-    }
-    entry->english = malloc(strlen(e) + 1);
-    if (entry->english) {
-      strcpy(entry->english, e);
-    }
+    entry->german = g;
+    entry->english = e;
   }
   return entry;
 }
