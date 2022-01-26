@@ -1,6 +1,5 @@
 #include "dict.h"
 #include "entry.h"
-#include "logging.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,10 +32,6 @@ node_t *createNode(entry_t *entry, node_t *next) {
 
 void deleteNodes(dict_t *dict, node_t *node) {
   if (dict && node) {
-    if (VERBOSE_LOGGING) {
-      printf("dict %d: deleting (%s)\n", dict->id,
-             entryToString(node->entry, NONE));
-    }
     deleteNodes(dict, node->next);
     free(node);
   }
@@ -44,10 +39,6 @@ void deleteNodes(dict_t *dict, node_t *node) {
 
 void deleteNode(dict_t *dict, node_t *node) {
   if (dict && node) {
-    if (VERBOSE_LOGGING) {
-      printf("dict %d: deleting (%s)\n", dict->id,
-             entryToString(node->entry, NONE));
-    }
     free(node);
   }
 }
