@@ -1,4 +1,5 @@
 #include "entry.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,11 +9,33 @@ typedef struct entry {
   char *english;
 } entry_t;
 
+char *trimWhitespace(char *str) {
+  char *end;
+  while (isspace((unsigned char)*str)) {
+    str++;
+  }
+  if (*str == 0)
+    return str;
+  end = str + strlen(str) - 1;
+  while (end > str && isspace((unsigned char)*end))
+    end--;
+  end[1] = '\0';
+  return str;
+}
+
 entry_t *createEntry(char *g, char *e) {
   entry_t *entry = malloc(sizeof(entry_t));
   if (entry) {
-    entry->german = g;
-    entry->english = e;
+    char *trimmed_g = trimWhitespace(g);
+    entry->german = malloc(strlen(trimmed_g) + 1);
+    if (entry->german) {
+      strcpy(entry->german, trimmed_g);
+    }
+    char *trimmed_e = trimWhitespace(e);
+    entry->english = malloc(strlen(trimmed_e) + 1);
+    if (entry->english) {
+      strcpy(entry->english, trimmed_e);
+    }
   }
   return entry;
 }
