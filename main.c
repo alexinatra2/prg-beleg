@@ -1,4 +1,5 @@
 #include "dict.h"
+#include "dictIO.h"
 #include <stdlib.h>
 
 int main(int argc, char **argv) {
@@ -10,5 +11,6 @@ int main(int argc, char **argv) {
       insertEntryStr(dict1, "jahr", "year");
   printDict(dict1);
   deleteDict(dict1);
+  importDict("makefile", GERMAN);
   return 0;
 }
