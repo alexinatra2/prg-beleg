@@ -37,11 +37,7 @@ int main(int argc, char **argv) {
   // printDict(dict);
 
   dict_t *d = importDict("dict.csv", GERMAN);
-
-  entry_t *entry;
-  while ((entry = nextEntry(d))) {
-    printf("%s\n", formattedEntryToString(entry, GERMAN, 10, 10));
-  }
+  exportDict(d, "dict.csv");
 
   return EXIT_SUCCESS;
 }

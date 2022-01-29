@@ -66,6 +66,8 @@ int deleteDict(dict_t *d) {
 
 void resetToRoot(dict_t *d) { d->current = d->start; }
 
+void iterateDict(dict_t *d) { d->current = d->current->next; }
+
 int insertEntry(dict_t *d, entry_t *e) {
   if (!d || !e) {
     return 0;
@@ -84,7 +86,7 @@ int insertEntry(dict_t *d, entry_t *e) {
     // and d->start has been proven to exist
     do {
       previous = d->current;
-      d->current = d->current->next;
+      iterateDict(d);
       comp = d->current ? compareEntries(e, d->current->entry, d->lang) : -1;
     } while (comp > 0);
     if (comp) {
@@ -108,7 +110,7 @@ int removeEntry(dict_t *d, entry_t *e) {
     resetToRoot(d);
     do {
       previous = d->current;
-      d->current = d->current->next;
+      iterateDict(d);
       comp = d->current ? compareEntries(e, d->current->entry, d->lang) : -1;
     } while (comp > 0);
     if (!comp) {
@@ -142,7 +144,7 @@ entry_t *nextEntry(dict_t *d) {
     return d->start->entry;
   } else if (hasNextEntry(d)) {
     position++;
-    d->current = d->current->next;
+    iterateDict(d);
     return d->current->entry;
   }
   position = 0;
@@ -177,7 +179,7 @@ void updateFormat(dict_t *d) {
       eng_current = getEnglishLength(d->current->entry);
       d->g_format = d->g_format > ger_current ? d->g_format : ger_current;
       d->e_format = d->e_format > eng_current ? d->e_format : eng_current;
-      d->current = d->current->next;
+      iterateDict(d);
     }
   }
 }

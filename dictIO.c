@@ -51,6 +51,10 @@ int exportDict(dict_t *d, char *file_name) {
     printf("%s\n", strerror(errno));
     exit(EXIT_FAILURE);
   }
-
+  entry_t *entry;
+  while ((entry = nextEntry(d))) {
+    fprintf(file, "%s\n", entryToString(entry, GERMAN));
+  }
+  fclose(file);
   return 0;
 }
