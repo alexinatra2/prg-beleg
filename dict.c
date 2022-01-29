@@ -131,6 +131,28 @@ int insertNodes(dict_t *d, node_t *n) {
   return !n || (insertEntry(d, n->entry) && insertNodes(d, n->next));
 }
 
+entry_t *nextEntry(dict_t *d) {
+  if (!d) {
+    return NULL;
+  }
+  static int position = 0;
+  if (position == 0) {
+    resetToRoot(d);
+    position++;
+    return d->start->entry;
+  } else if (hasNextEntry(d)) {
+    position++;
+    d->current = d->current->next;
+    return d->current->entry;
+  }
+  position = 0;
+  return NULL;
+}
+
+int hasNextEntry(dict_t *d) {
+  return d && d->current && d->current->next && d->current->next->entry;
+}
+
 int mergeDicts(dict_t *d1, dict_t *d2) {
   return d1 && d2 ? insertNodes(d1, d2->start) : 0;
 }

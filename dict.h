@@ -14,6 +14,9 @@ int removeEntry(dict_t *d, entry_t *e);
 int insertEntryStr(dict_t *d, char *g, char *e);
 int removeEntryStr(dict_t *d, char *g, char *e);
 
+entry_t *nextEntry(dict_t *d);
+int hasNextEntry(dict_t *d);
+
 int mergeDicts(dict_t *d1, dict_t *d2);
 
 void printDict(dict_t *d);

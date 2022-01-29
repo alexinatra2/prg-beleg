@@ -1,6 +1,7 @@
 #include "dictIO.h"
 #include "dict.h"
 #include "entry.h"
+#include <errno.h>
 #include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,34 +16,41 @@
 #endif // !TOKENS
 
 #ifndef CSV_LINE_PATTERN
-#define CSV_LINE_PATTERN                                                       \
-  "^[:blank:]*[:alnum:]+[:blank:]*[,; ][:blank:]*[:alnum:]+[:blank:]*[,; "     \
-  "]?[:blank:]*$"
+#define CSV_LINE_PATTERN "^(\t )*[:alpha:]+(\t )*[\t ,;]?(\t )*[:alpha:]+(\t )$"
 #endif // !CSV_LINE_PATTERN
 
 dict_t *importDict(char *file_name, language_e lang) {
   FILE *file = fopen(file_name, "r");
   if (!file) {
-    return NULL;
+    printf("%s\n", strerror(errno));
+    exit(EXIT_FAILURE);
   }
-  char buffer[BUF_SIZE];
+  char *buffer = malloc(BUF_SIZE);
   dict_t *dict = createDict(lang);
-  regex_t regex;
-  int ret = regcomp(&regex, CSV_LINE_PATTERN, REG_EXTENDED);
-  printf("%d\n", REG_NOMATCH == regexec(&regex, " a ; asdfsadf", 0, NULL, 0));
-  return NULL;
+  regex_t *regex = malloc(sizeof(regex_t));
+  regcomp(regex, CSV_LINE_PATTERN, REG_EXTENDED);
   if (dict) {
-    while (fgets(buffer, BUF_SIZE, file)) {
-      if (regexec(&regex, buffer, 0, NULL, 0)) {
-        return NULL;
+    while (!feof(file) && fgets(buffer, BUF_SIZE, file)) {
+      //  regexec(regex, buffer, 0, NULL, 0) != _REG_NOMATCH) {
+      if (buffer[strlen(buffer) - 1] == '\n') {
+        buffer[strlen(buffer) - 1] = 0;
       }
-      char *first = strtok(buffer, TOKENS);
-      char *second = strtok(NULL, TOKENS);
+      char *german = strtok(buffer, TOKENS);
+      char *english = strtok(NULL, TOKENS);
+      insertEntryStr(dict, german, english);
     }
   }
   fclose(file);
-  regfree(&regex);
+  // regfree(regex);
   return dict;
 }
 
-int exportDict(dict_t *d) { return 0; }
+int exportDict(dict_t *d, char *file_name) {
+  FILE *file = fopen(file_name, "w");
+  if (!file) {
+    printf("%s\n", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
+
+  return 0;
+}
