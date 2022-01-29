@@ -61,10 +61,10 @@ int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   switch (lang) {
   case GERMAN: {
     comp = strcmp(entry1->german, entry2->german);
-    return comp ? comp : strcmp(entry2->english, entry2->english);
+    return comp ? comp : strcmp(entry1->english, entry2->english);
   }
   case ENGLISH: {
-    comp = strcmp(entry2->english, entry2->english);
+    comp = strcmp(entry1->english, entry2->english);
     return comp ? comp : strcmp(entry1->german, entry2->german);
   }
   default:
