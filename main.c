@@ -10,34 +10,21 @@
 #define BUF_SIZE 128
 #endif // !BUF_SIZE
 
+#ifndef BASE_DICT_NAME
+#define BASE_DICT_NAME "dict.csv"
+#endif // !BASE_DICT_NAME
+
 int main(int argc, char **argv) {
-  // if (argc < 2 || argc > 3) {
-  //   fprintf(stderr, "usage: %s <amount_of_dict_entries_to_insert>
-  //   [ger|eng]\n",
-  //           argv[0]);
-  //   return EXIT_FAILURE;
-  // }
+  dict_t *g = importDict(BASE_DICT_NAME, GERMAN);
+  dict_t *e = importDict(BASE_DICT_NAME, ENGLISH);
 
-  // language_e lang = argc == 3 && strcmp(argv[2], "eng") == 0 ? ENGLISH :
-  // GERMAN;
+  printDict(g);
+  printDict(e);
 
-  // dict_t *dict = createDict(lang);
+  exportDict(g, BASE_DICT_NAME);
 
-  // char first[BUF_SIZE];
-  // char second[BUF_SIZE];
-  // for (int i = 0; i < atoi(argv[1]); i++) {
-  //   printf("%s word: ", lang == GERMAN ? "German" : "English");
-  //   fgets(first, BUF_SIZE, stdin);
-  //   printf("%s word: ", lang == ENGLISH ? "German" : "English");
-  //   fgets(second, BUF_SIZE, stdin);
-  //   lang == GERMAN ? insertEntryStr(dict, first, second)
-  //                  : insertEntryStr(dict, second, first);
-  // }
-
-  // printDict(dict);
-
-  dict_t *d = importDict("dict.csv", GERMAN);
-  exportDict(d, "dict.csv");
+  deleteDict(g);
+  deleteDict(e);
 
   return EXIT_SUCCESS;
 }

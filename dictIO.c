@@ -27,11 +27,8 @@ dict_t *importDict(char *file_name, language_e lang) {
   }
   char *buffer = malloc(BUF_SIZE);
   dict_t *dict = createDict(lang);
-  regex_t *regex = malloc(sizeof(regex_t));
-  regcomp(regex, CSV_LINE_PATTERN, REG_EXTENDED);
   if (dict) {
     while (!feof(file) && fgets(buffer, BUF_SIZE, file)) {
-      //  regexec(regex, buffer, 0, NULL, 0) != _REG_NOMATCH) {
       if (buffer[strlen(buffer) - 1] == '\n') {
         buffer[strlen(buffer) - 1] = 0;
       }
@@ -41,7 +38,6 @@ dict_t *importDict(char *file_name, language_e lang) {
     }
   }
   fclose(file);
-  // regfree(regex);
   return dict;
 }
 
