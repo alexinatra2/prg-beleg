@@ -143,7 +143,6 @@ entry_t *nextEntry(dict_t *d) {
     position++;
     return d->start->entry;
   } else if (hasNextEntry(d)) {
-    position++;
     iterateDict(d);
     return d->current->entry;
   }

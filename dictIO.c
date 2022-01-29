@@ -12,7 +12,7 @@
 #endif // !BUF_SIZE
 
 #ifndef TOKENS
-#define TOKENS ",; "
+#define TOKENS ",;"
 #endif // !TOKENS
 
 #ifndef CSV_LINE_PATTERN
@@ -34,7 +34,7 @@ dict_t *importDict(char *file_name, language_e lang) {
       }
       char *german = strtok(buffer, TOKENS);
       char *english = strtok(NULL, TOKENS);
-      insertEntryStr(dict, german, english);
+      insertEntry(dict, createEntry(german, english));
     }
   }
   fclose(file);
