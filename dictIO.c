@@ -53,7 +53,7 @@ int exportDict(dict_t *d, char *file_name) {
   }
   entry_t *entry;
   while ((entry = nextEntry(d))) {
-    fprintf(file, "%s\n", entryToString(entry, GERMAN));
+    fprintf(file, "%s\n", entryToString(entry));
   }
   fclose(file);
   return 0;

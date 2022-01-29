@@ -72,19 +72,12 @@ int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   }
 }
 
-char *entryToString(entry_t *entry, language_e lang) {
+char *entryToString(entry_t *entry) {
   if (entry) {
     // strlen("entry1 | entry2") + terminating 0-byte
     char *str = malloc(strlen(entry->german) + strlen(entry->english) + 4);
     if (str) {
-      switch (lang) {
-      case GERMAN:
-        sprintf(str, "%s, %s", entry->german, entry->english);
-        break;
-      case ENGLISH:
-      default:
-        sprintf(str, "%s, %s", entry->english, entry->german);
-      }
+      sprintf(str, "%s, %s", entry->german, entry->english);
     }
     return str;
   }

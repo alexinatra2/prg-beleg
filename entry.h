@@ -11,7 +11,7 @@ int getEnglishLength(entry_t *e);
 
 int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang);
 
-char *entryToString(entry_t *e, language_e lang);
+char *entryToString(entry_t *e);
 char *formattedEntryToString(entry_t *e, language_e lang, int g_format, int e_format);
 
 #endif // !ENTRY
