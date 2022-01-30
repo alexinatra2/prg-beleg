@@ -4,8 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef DICT_CONSTANTS
+#define DICT_CONSTANTS
 #define GERMAN_STR "GERMAN"
 #define ENGLISH_STR "ENGLISH"
+#define TOTAL_TABLE_PADDING 7
+#endif // !DICT_CONSTANTS
 
 typedef struct node {
   entry_t *entry;
@@ -150,9 +154,7 @@ entry_t *nextEntry(dict_t *d) {
   return NULL;
 }
 
-int hasNextEntry(dict_t *d) {
-  return d && d->current && d->current->next && d->current->next->entry;
-}
+int hasNextEntry(dict_t *d) { return d && d->current && d->current->next; }
 
 dict_t *lookup(dict_t *d, char *word) {
   if (!d) {
@@ -177,38 +179,42 @@ int mergeDicts(dict_t *d1, dict_t *d2) {
   return d1 && d2 ? insertNodes(d1, d2->start) : 0;
 }
 
-void printNode(node_t *n, language_e lang, int g_format, int e_format) {
-  if (n && n->entry) {
-    printf("| %s |\n",
-           formattedEntryToString(n->entry, lang, g_format, e_format));
-    printNode(n->next, lang, g_format, e_format);
+void printNodes(node_t *n, language_e lang, int g_format, int e_format) {
+  if (!n || !n->entry) {
+    return;
   }
+  entry_t *entry = n->entry;
+  printf("| %-*s | %-*s |\n", lang == GERMAN ? g_format : e_format,
+         getWord(entry, lang), lang == GERMAN ? e_format : g_format,
+         getWord(entry, lang == GERMAN ? ENGLISH : GERMAN));
+  printNodes(n->next, lang, g_format, e_format);
 }
 
 void updateFormat(dict_t *d) {
-  if (d) {
-    resetToRoot(d);
-    d->g_format = strlen(GERMAN_STR);
-    d->e_format = strlen(ENGLISH_STR);
-    int ger_current;
-    int eng_current;
-    while (d->current) {
-      ger_current = getGermanLength(d->current->entry);
-      eng_current = getEnglishLength(d->current->entry);
-      d->g_format = d->g_format > ger_current ? d->g_format : ger_current;
-      d->e_format = d->e_format > eng_current ? d->e_format : eng_current;
-      iterateDict(d);
-    }
+  if (!d) {
+    return;
+  }
+  resetToRoot(d);
+  d->g_format = strlen(GERMAN_STR);
+  d->e_format = strlen(ENGLISH_STR);
+  int ger_current, eng_current;
+  while (d->current) {
+    ger_current = strlen(getWord(d->current->entry, GERMAN));
+    eng_current = strlen(getWord(d->current->entry, ENGLISH));
+    d->g_format = d->g_format > ger_current ? d->g_format : ger_current;
+    d->e_format = d->e_format > eng_current ? d->e_format : eng_current;
+    iterateDict(d);
   }
 }
 
 void printTableSeparator(dict_t *d) {
-  if (d) {
-    for (int i = 0; i < d->g_format + d->e_format + 7; i++) {
-      printf("-");
-    }
-    printf("\n");
+  if (!d) {
+    return;
   }
+  for (int i = 0; i < d->g_format + d->e_format + TOTAL_TABLE_PADDING; i++) {
+    printf("-");
+  }
+  printf("\n");
 }
 
 void printDict(dict_t *d) {
@@ -221,10 +227,10 @@ void printDict(dict_t *d) {
   printf("| %-*s | %-*s |\n", d->lang == GERMAN ? d->g_format : d->e_format,
          d->lang == GERMAN ? GERMAN_STR : ENGLISH_STR,
          d->lang == GERMAN ? d->e_format : d->g_format,
-         d->lang == ENGLISH ? GERMAN_STR : ENGLISH_STR);
+         d->lang == GERMAN ? ENGLISH_STR : GERMAN_STR);
   printTableSeparator(d);
   if (d) {
-    printNode(d->start, d->lang, d->g_format, d->e_format);
+    printNodes(d->start, d->lang, d->g_format, d->e_format);
   }
   printTableSeparator(d);
 }

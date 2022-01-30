@@ -21,9 +21,6 @@ int main(int argc, char **argv) {
   printDict(g);
   printDict(e);
 
-  dict_t *fahrstuhl_dict = lookup(g, "schaf");
-  printDict(fahrstuhl_dict);
-
   exportDict(g, BASE_DICT_NAME);
 
   deleteDict(g);

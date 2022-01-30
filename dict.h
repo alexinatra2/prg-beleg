@@ -14,6 +14,7 @@ int removeEntry(dict_t *d, entry_t *e);
 int insertEntryStr(dict_t *d, char *g, char *e);
 int removeEntryStr(dict_t *d, char *g, char *e);
 
+void resetToRoot(dict_t *d);
 entry_t *nextEntry(dict_t *d);
 int hasNextEntry(dict_t *d);
 
