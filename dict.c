@@ -160,6 +160,7 @@ entry_t *nextEntry(dict_t *d) {
 
 int hasNextEntry(dict_t *d) { return d && d->current && d->current->next; }
 
+// TODO fix consuming input
 dict_t *lookup(dict_t *d, char *word) {
   if (!d) {
     return NULL;
@@ -171,7 +172,7 @@ dict_t *lookup(dict_t *d, char *word) {
   }
   entry_t *entry;
   while (hasNextEntry(d)) {
-    entry = nextEntry(d);
+    entry = cloneEntry(nextEntry(d));
     if (strcmp(word, getWord(entry, d->lang)) == 0) {
       insertEntry(word_dict, entry);
     }

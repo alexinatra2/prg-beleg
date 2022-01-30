@@ -40,6 +40,8 @@ entry_t *createEntry(char *g, char *e) {
   return entry;
 }
 
+entry_t *cloneEntry(entry_t *e) { return createEntry(e->german, e->english); }
+
 int deleteEntry(entry_t *entry) {
   if (entry) {
     free(entry);
