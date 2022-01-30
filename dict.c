@@ -154,6 +154,25 @@ int hasNextEntry(dict_t *d) {
   return d && d->current && d->current->next && d->current->next->entry;
 }
 
+dict_t *lookup(dict_t *d, char *word) {
+  if (!d) {
+    return NULL;
+  }
+  resetToRoot(d);
+  dict_t *word_dict = createDict(d->lang);
+  if (!word_dict) {
+    return NULL;
+  }
+  entry_t *entry;
+  while (hasNextEntry(d)) {
+    entry = nextEntry(d);
+    if (strcmp(word, getWord(entry, d->lang)) == 0) {
+      insertEntry(word_dict, entry);
+    }
+  }
+  return word_dict;
+}
+
 int mergeDicts(dict_t *d1, dict_t *d2) {
   return d1 && d2 ? insertNodes(d1, d2->start) : 0;
 }
@@ -193,6 +212,9 @@ void printTableSeparator(dict_t *d) {
 }
 
 void printDict(dict_t *d) {
+  if (!d) {
+    return;
+  }
   printf("\ndict %d:\n", d->id);
   updateFormat(d);
   printTableSeparator(d);

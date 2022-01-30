@@ -6,6 +6,8 @@ typedef struct entry entry_t;
 
 entry_t *createEntry(char *g, char *e);
 int deleteEntry(entry_t *e);
+
+char *getWord(entry_t *e, language_e lang);
 int getGermanLength(entry_t *e);
 int getEnglishLength(entry_t *e);
 

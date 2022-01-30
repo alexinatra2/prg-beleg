@@ -47,6 +47,14 @@ int deleteEntry(entry_t *entry) {
   }
   return 0;
 }
+
+char *getWord(entry_t *e, language_e lang) {
+  if (!e) {
+    return NULL;
+  }
+  return (lang == GERMAN) ? e->german : e->english;
+}
+
 int getGermanLength(entry_t *e) { return strlen(e->german); }
 int getEnglishLength(entry_t *e) { return strlen(e->english); }
 

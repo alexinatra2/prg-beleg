@@ -17,8 +17,7 @@ int removeEntryStr(dict_t *d, char *g, char *e);
 entry_t *nextEntry(dict_t *d);
 int hasNextEntry(dict_t *d);
 
-// TODO implement lookup
-entry_t *lookup(dict_t *d, char *word);
+dict_t *lookup(dict_t *d, char *word);
 
 int mergeDicts(dict_t *d1, dict_t *d2);
 

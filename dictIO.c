@@ -48,8 +48,8 @@ int exportDict(dict_t *d, char *file_name) {
     exit(EXIT_FAILURE);
   }
   entry_t *entry;
-  while ((entry = nextEntry(d))) {
-    fprintf(file, "%s\n", entryToString(entry));
+  while (hasNextEntry(d)) {
+    fprintf(file, "%s\n", entryToString(nextEntry(d)));
   }
   fclose(file);
   return 0;
