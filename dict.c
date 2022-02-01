@@ -8,10 +8,6 @@
 #define DICT_CONSTANTS
 #define GERMAN_STR "GERMAN"
 #define ENGLISH_STR "ENGLISH"
-#define MAX_TABLE_SEPARATOR                                                    \
-  "--------------------------------------------------------------------------" \
-  "--------------------------------------------------------------------------" \
-  "------------------------------------------------------------------------"
 #define TOTAL_TABLE_PADDING 7
 #endif // !DICT_CONSTANTS
 
@@ -210,16 +206,17 @@ void updateFormat(dict_t *d) {
   }
 }
 
-char *tableSeparator(dict_t *d) {
+char *tableSeparator(dict_t *d, int g_format, int e_format) {
   if (!d) {
     return NULL;
   }
-  int str_length = d->g_format + d->e_format + TOTAL_TABLE_PADDING;
-  char *str = malloc(str_length);
-  if (str) {
-    strncpy(str, MAX_TABLE_SEPARATOR, str_length);
+  int separators = g_format + e_format + TOTAL_TABLE_PADDING + 1;
+  char *table_separator = malloc(separators);
+  for (int i = 0; i < separators; i++) {
+    table_separator[i] = '-';
   }
-  return str;
+  table_separator[separators - 1] = 0;
+  return table_separator;
 }
 
 void printDict(dict_t *d) {
@@ -227,7 +224,7 @@ void printDict(dict_t *d) {
     return;
   }
   updateFormat(d);
-  char *table_separator = tableSeparator(d);
+  char *table_separator = tableSeparator(d, d->g_format, d->e_format);
   printf("\ndict %d:\n"
          "%s\n"
          "| %-*s | %-*s |\n"
@@ -239,5 +236,5 @@ void printDict(dict_t *d) {
   if (d) {
     printNodes(d->start, d->lang, d->g_format, d->e_format);
   }
-  printf("%s\n", tableSeparator(d));
+  printf("%s\n", table_separator);
 }
