@@ -19,13 +19,14 @@
 
 void handleBaseDictNotPresent(char *program);
 int handleBaseDictNull(dict_t *d, language_e lang);
+int handleAdditionalDictCreation(int argc, char **argv);
+
+dict_t *german_base_dict;
+dict_t *german_additional_dict = NULL;
+dict_t *english_base_dict;
+dict_t *english_additional_dict = NULL;
 
 int main(int argc, char **argv) {
-  dict_t *german_base_dict;
-  dict_t *german_additional_dict;
-  dict_t *english_base_dict;
-  dict_t *english_additional_dict;
-
   if (access(BASE_DICT_NAME, F_OK)) {
     handleBaseDictNotPresent(argv[0]);
   }
@@ -35,8 +36,19 @@ int main(int argc, char **argv) {
 
   if (handleBaseDictNull(german_base_dict, GERMAN) ||
       handleBaseDictNull(english_base_dict, ENGLISH)) {
+    fprintf(stderr, "A base dict is NULL\n");
     return EXIT_FAILURE;
   }
+
+  if (handleAdditionalDictCreation(argc, argv)) {
+    fprintf(
+        stderr,
+        "An error occurred while handling additional dictionary creation.\n");
+    return EXIT_FAILURE;
+  }
+
+  mergeDicts(german_base_dict, german_additional_dict);
+  mergeDicts(english_base_dict, english_additional_dict);
 
   printDict(german_base_dict);
   printDict(english_base_dict);
@@ -67,5 +79,24 @@ int handleBaseDictNull(dict_t *d, language_e lang) {
     return 0;
   }
   fprintf(stderr, "%s dict is NULL\n", lang == GERMAN ? "German" : "English");
+  return 1;
+}
+
+int handleAdditionalDictCreation(int argc, char **argv) {
+  if (argc < 2) {
+    return 0;
+  } else if (argc % 2) {
+    german_additional_dict = createDict(GERMAN, "Additional words from cmd");
+    english_additional_dict = createDict(ENGLISH, "Additional words from cmd");
+    for (int i = 1; i < argc; i += 2) {
+      insertEntryStr(german_additional_dict, argv[i], argv[i + 1]);
+      insertEntryStr(english_additional_dict, argv[i], argv[i + 1]);
+    }
+    return !german_additional_dict || !english_additional_dict;
+  } else if (access(argv[1], F_OK)) {
+    german_additional_dict = importDict(argv[1], GERMAN);
+    english_additional_dict = importDict(argv[1], ENGLISH);
+    return !german_additional_dict || !english_additional_dict;
+  }
   return 1;
 }
