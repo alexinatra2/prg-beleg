@@ -150,7 +150,7 @@ entry_t *nextEntry(dict_t *d) {
     resetToRoot(d);
     position++;
     return d->start->entry;
-  } else if (hasNextEntry(d)) {
+  } else if (hasNext(d)) {
     iterateDict(d);
     return d->current->entry;
   }
@@ -158,9 +158,8 @@ entry_t *nextEntry(dict_t *d) {
   return NULL;
 }
 
-int hasNextEntry(dict_t *d) { return d && d->current && d->current->next; }
+int hasNext(dict_t *d) { return d && d->current && d->current->next; }
 
-// TODO fix consuming input
 dict_t *lookup(dict_t *d, char *word) {
   if (!d) {
     return NULL;
@@ -170,12 +169,11 @@ dict_t *lookup(dict_t *d, char *word) {
   if (!word_dict) {
     return NULL;
   }
-  entry_t *entry;
-  while (hasNextEntry(d)) {
-    entry = cloneEntry(nextEntry(d));
-    if (strcmp(word, getWord(entry, d->lang)) == 0) {
-      insertEntry(word_dict, entry);
+  while (d->current) {
+    if (strcmp(getWord(d->current->entry, d->lang), word) == 0) {
+      insertEntry(word_dict, cloneEntry(d->current->entry));
     }
+    iterateDict(d);
   }
   return word_dict;
 }

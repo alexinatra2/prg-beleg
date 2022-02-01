@@ -16,7 +16,7 @@ int removeEntryStr(dict_t *d, char *g, char *e);
 
 void resetToRoot(dict_t *d);
 entry_t *nextEntry(dict_t *d);
-int hasNextEntry(dict_t *d);
+int hasNext(dict_t *d);
 
 dict_t *lookup(dict_t *d, char *word);
 

@@ -15,20 +15,15 @@
 #endif // !BASE_DICT_NAME
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    return EXIT_FAILURE;
-  }
-
   dict_t *g = importDict(BASE_DICT_NAME, GERMAN);
   dict_t *e = importDict(BASE_DICT_NAME, ENGLISH);
 
   printDict(g);
   printDict(e);
 
-  dict_t *t = lookup(g, argv[1]);
+  dict_t *t = lookup(g, argc > 1 ? argv[1] : "");
   printDict(t);
-  printDict(g);
-  printDict(e);
+
   exportDict(g, BASE_DICT_NAME);
 
   deleteDict(g);
