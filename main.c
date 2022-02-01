@@ -127,7 +127,7 @@ int handleUserInput(char input) {
     printf("English word: ");
     fgets(eng_buffer, BUF_SIZE, stdin);
     insertEntryStr(german_base_dict, ger_buffer, eng_buffer) &&
-        insertEntryStr(german_base_dict, ger_buffer, eng_buffer);
+        insertEntryStr(english_base_dict, ger_buffer, eng_buffer);
     return 1;
   case 'r':
     printf("German word: ");
@@ -135,7 +135,7 @@ int handleUserInput(char input) {
     printf("English word: ");
     fgets(eng_buffer, BUF_SIZE, stdin);
     removeEntryStr(german_base_dict, ger_buffer, eng_buffer) &&
-        removeEntryStr(german_base_dict, ger_buffer, eng_buffer);
+        removeEntryStr(english_base_dict, ger_buffer, eng_buffer);
     return 1;
   case 's':
     german_mode = german_mode ? 0 : 1;

@@ -70,7 +70,6 @@ int strcmpCaseInsensitive(char *first, char *second) {
   }
 }
 
-// TODO compare case insensitive
 int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   if (!entry1) {
     return -1;

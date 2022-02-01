@@ -39,7 +39,6 @@ dict_t *importDict(char *file_name, language_e lang) {
   return dict;
 }
 
-// TODO change this to not use has next or improve has next
 int exportDict(dict_t *d, char *file_name) {
   FILE *file = fopen(file_name, "w");
   if (!file) {

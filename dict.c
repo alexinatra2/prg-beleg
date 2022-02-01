@@ -1,5 +1,6 @@
 #include "dict.h"
 #include "entry.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -139,6 +140,7 @@ dict_t *lookup(dict_t *d, char *word) {
   if (!d) {
     return NULL;
   }
+  word = trimWhitespace(word);
   resetToRoot(d);
   char *description_str = malloc(strlen(word) + 16);
   sprintf(description_str, "Occurences of \"%s\"", word);
