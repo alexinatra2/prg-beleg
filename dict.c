@@ -68,8 +68,11 @@ int deleteDict(dict_t *d) {
 }
 
 void resetToRoot(dict_t *d) { d->current = d->start; }
-
 void iterateDict(dict_t *d) { d->current = d->current->next; }
+int currentExists(dict_t *d) { return d && d->current; }
+entry_t *getCurrent(dict_t *d) {
+  return d && d->current ? d->current->entry : NULL;
+}
 
 int insertEntry(dict_t *d, entry_t *e) {
   if (!d || !e) {
@@ -132,29 +135,6 @@ int removeEntryStr(dict_t *d, char *g, char *e) {
   return removeEntry(d, createEntry(g, e));
 }
 
-int insertNodes(dict_t *d, node_t *n) {
-  return !n || (insertEntry(d, n->entry) && insertNodes(d, n->next));
-}
-
-entry_t *nextEntry(dict_t *d) {
-  if (!d) {
-    return NULL;
-  }
-  static int position = 0;
-  if (position == 0) {
-    resetToRoot(d);
-    position++;
-    return d->start->entry;
-  } else if (hasNext(d)) {
-    iterateDict(d);
-    return d->current->entry;
-  }
-  position = 0;
-  return NULL;
-}
-
-int hasNext(dict_t *d) { return d && d->current && d->current->next; }
-
 dict_t *lookup(dict_t *d, char *word) {
   if (!d) {
     return NULL;
@@ -173,6 +153,10 @@ dict_t *lookup(dict_t *d, char *word) {
     iterateDict(d);
   }
   return word_dict;
+}
+
+int insertNodes(dict_t *d, node_t *n) {
+  return !n || (insertEntry(d, n->entry) && insertNodes(d, n->next));
 }
 
 int mergeDicts(dict_t *d1, dict_t *d2) {

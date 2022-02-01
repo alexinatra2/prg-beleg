@@ -15,10 +15,6 @@
 #define TOKENS ",;"
 #endif // !TOKENS
 
-#ifndef CSV_LINE_PATTERN
-#define CSV_LINE_PATTERN "^(\t )*[:alpha:]+(\t )*[\t ,;]?(\t )*[:alpha:]+(\t )$"
-#endif // !CSV_LINE_PATTERN
-
 dict_t *importDict(char *file_name, language_e lang) {
   FILE *file = fopen(file_name, "r");
   if (!file) {
@@ -43,6 +39,7 @@ dict_t *importDict(char *file_name, language_e lang) {
   return dict;
 }
 
+// TODO change this to not use has next or improve has next
 int exportDict(dict_t *d, char *file_name) {
   FILE *file = fopen(file_name, "w");
   if (!file) {
@@ -50,8 +47,9 @@ int exportDict(dict_t *d, char *file_name) {
     exit(EXIT_FAILURE);
   }
   resetToRoot(d);
-  while (hasNext(d)) {
-    fprintf(file, "%s\n", entryToString(nextEntry(d)));
+  while (currentExists(d)) {
+    fprintf(file, "%s\n", entryToString(getCurrent(d)));
+    iterateDict(d);
   }
   fclose(file);
   return 0;

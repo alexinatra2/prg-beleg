@@ -17,16 +17,22 @@
 #define BUF_SIZE 128
 #endif // !CONSTANTS
 
-int baseDictErrors(char *program_name);
-int cmdArgumentValidationErrors(int argc, char **args);
-
-dict_t *german_base_dict;
-dict_t *german_additional_dict;
-dict_t *english_base_dict;
-dict_t *english_additional_dict;
-
 int main(int argc, char **argv) {
-  if (baseDictErrors(argv[0]) || cmdArgumentValidationErrors(argc, argv)) {
+  dict_t *german_base_dict;
+  dict_t *german_additional_dict;
+  dict_t *english_base_dict;
+  dict_t *english_additional_dict;
+
+  if (access(BASE_DICT_NAME, F_OK)) {
+    fprintf(stderr, "%s: file %s does not exist. Creating %s...\n", argv[0],
+            BASE_DICT_NAME, BASE_DICT_NAME);
+    char *touch_file_command = malloc(strlen(BASE_DICT_NAME) + 8);
+    if (touch_file_command) {
+      sprintf(touch_file_command, "touch %s", BASE_DICT_NAME);
+    }
+    if (system(touch_file_command)) {
+      fprintf(stderr, "Could not create file %s\n", BASE_DICT_NAME);
+    }
     return EXIT_FAILURE;
   }
 
@@ -42,40 +48,4 @@ int main(int argc, char **argv) {
   deleteDict(english_base_dict);
 
   return EXIT_SUCCESS;
-}
-
-int baseDictErrors(char *program_name) {
-  if (access(BASE_DICT_NAME, F_OK)) {
-    fprintf(stderr, "%s: file %s does not exist. Creating %s...\n",
-            program_name, BASE_DICT_NAME, BASE_DICT_NAME);
-    char *touch_file_command = malloc(strlen(BASE_DICT_NAME) + 8);
-    if (touch_file_command) {
-      sprintf(touch_file_command, "touch %s", BASE_DICT_NAME);
-    }
-    if (system(touch_file_command)) {
-      fprintf(stderr, "Could not create file %s\n", BASE_DICT_NAME);
-    }
-    return FAIL;
-  }
-  return OK;
-}
-
-int cmdArgumentValidationErrors(int argc, char **args) {
-  if (argc < 2) {
-    return 0;
-  } else if (access(args[1], F_OK) == 0) {
-    german_additional_dict = importDict(args[1], GERMAN);
-    english_additional_dict = importDict(args[1], ENGLISH);
-    return german_additional_dict && english_additional_dict;
-  } else if (argc % 2) {
-    german_additional_dict = createDict(
-        GERMAN, "Additional words supplied through the command line");
-    english_additional_dict = createDict(
-        ENGLISH, "Additional words supplied through the command line");
-    for (int i = 1; i < argc + 1; i += 2) {
-      insertEntryStr(german_additional_dict, args[i], args[i + 1]);
-      insertEntryStr(english_additional_dict, args[i], args[i + 1]);
-    }
-  }
-  return 1;
 }
