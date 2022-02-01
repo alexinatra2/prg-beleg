@@ -26,7 +26,7 @@ dict_t *importDict(char *file_name, language_e lang) {
     exit(EXIT_FAILURE);
   }
   char *buffer = malloc(BUF_SIZE);
-  dict_t *dict = createDict(lang);
+  dict_t *dict = createDict(lang, NULL);
   if (dict) {
     while (!feof(file) && fgets(buffer, BUF_SIZE, file)) {
       if (buffer[strlen(buffer) - 1] == '\n') {

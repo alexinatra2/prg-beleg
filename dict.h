@@ -5,7 +5,7 @@
 
 typedef struct dict dict_t;
 
-dict_t *createDict(language_e);
+dict_t *createDict(language_e lang, char *description);
 int deleteDict(dict_t *d);
 
 int insertEntry(dict_t *d, entry_t *e);

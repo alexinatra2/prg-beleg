@@ -17,9 +17,9 @@ typedef struct node {
 } node_t;
 
 typedef struct dict {
-  int id;
   int g_format;
   int e_format;
+  char *description;
   node_t *start;
   node_t *current;
   language_e lang;
@@ -47,14 +47,13 @@ void deleteNode(dict_t *dict, node_t *node) {
   }
 }
 
-dict_t *createDict(language_e lang) {
+dict_t *createDict(language_e lang, char *description) {
   dict_t *dict = malloc(sizeof(dict_t));
   if (dict) {
     dict->start = NULL;
     dict->current = NULL;
     dict->lang = lang;
-    static int id_counter = 1;
-    dict->id = id_counter++;
+    dict->description = description;
   }
   return dict;
 }
@@ -161,7 +160,9 @@ dict_t *lookup(dict_t *d, char *word) {
     return NULL;
   }
   resetToRoot(d);
-  dict_t *word_dict = createDict(d->lang);
+  char *description_str = malloc(strlen(word) + 16);
+  sprintf(description_str, "Occurences of \"%s\"", word);
+  dict_t *word_dict = createDict(d->lang, description_str);
   if (!word_dict) {
     return NULL;
   }
@@ -225,11 +226,12 @@ void printDict(dict_t *d) {
   }
   updateFormat(d);
   char *table_separator = tableSeparator(d, d->g_format, d->e_format);
-  printf("\ndict %d:\n"
+  printf("\n%s:\n"
          "%s\n"
          "| %-*s | %-*s |\n"
          "%s\n",
-         d->id, table_separator, d->lang == GERMAN ? d->g_format : d->e_format,
+         d->description ? d->description : "dictionary", table_separator,
+         d->lang == GERMAN ? d->g_format : d->e_format,
          d->lang == GERMAN ? GERMAN_STR : ENGLISH_STR,
          d->lang == GERMAN ? d->e_format : d->g_format,
          d->lang == GERMAN ? ENGLISH_STR : GERMAN_STR, table_separator);
