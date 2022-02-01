@@ -57,6 +57,20 @@ char *getWord(entry_t *e, language_e lang) {
   return (lang == GERMAN) ? e->german : e->english;
 }
 
+/**
+ * @see
+ * https://stackoverflow.com/questions/5820810/case-insensitive-string-comparison-in-c
+ * user Fred Foo - Aug 23'18 at 18:29
+ */
+int strcmpCaseInsensitive(char *first, char *second) {
+  for (;; first++, second++) {
+    int d = tolower((unsigned char)*first) - tolower((unsigned char)*second);
+    if (d != 0 || !*first)
+      return d;
+  }
+}
+
+// TODO compare case insensitive
 int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   if (!entry1) {
     return -1;
@@ -67,12 +81,13 @@ int compareEntries(entry_t *entry1, entry_t *entry2, language_e lang) {
   int comp;
   switch (lang) {
   case GERMAN: {
-    comp = strcmp(entry1->german, entry2->german);
-    return comp ? comp : strcmp(entry1->english, entry2->english);
+    comp = strcmpCaseInsensitive(entry1->german, entry2->german);
+    return comp ? comp
+                : strcmpCaseInsensitive(entry1->english, entry2->english);
   }
   case ENGLISH: {
-    comp = strcmp(entry1->english, entry2->english);
-    return comp ? comp : strcmp(entry1->german, entry2->german);
+    comp = strcmpCaseInsensitive(entry1->english, entry2->english);
+    return comp ? comp : strcmpCaseInsensitive(entry1->german, entry2->german);
   }
   default:
     return 0;
