@@ -1,5 +1,5 @@
 // TODO refactor
-
+// TODO document
 #include "dict.h"
 #include "dictIO.h"
 #include "entry.h"
@@ -8,12 +8,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifndef BASE_DICT_NAME
-#define BASE_DICT_NAME "dict.csv"
-#endif // !BASE_DICT_NAME
-
 #ifndef CONSTANTS
 #define CONSTANTS
+#define BASE_DICT_NAME "dict.csv"
 #define BUF_SIZE 128
 #endif // !CONSTANTS
 
@@ -23,8 +20,8 @@ int handleAdditionalDictCreation(int argc, char **argv);
 int handleUserInput(char input);
 
 dict_t *german_base_dict;
-dict_t *german_additional_dict = NULL;
 dict_t *english_base_dict;
+dict_t *german_additional_dict = NULL;
 dict_t *english_additional_dict = NULL;
 int german_mode = 1;
 char ger_buffer[BUF_SIZE];
