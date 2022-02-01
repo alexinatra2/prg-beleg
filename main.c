@@ -6,28 +6,76 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifndef BUF_SIZE
-#define BUF_SIZE 128
-#endif // !BUF_SIZE
-
 #ifndef BASE_DICT_NAME
 #define BASE_DICT_NAME "dict.csv"
 #endif // !BASE_DICT_NAME
 
+#ifndef CONSTANTS
+#define CONSTANTS
+#define OK 0
+#define FAIL 1
+#define BUF_SIZE 128
+#endif // !CONSTANTS
+
+int baseDictErrors(char *program_name);
+int cmdArgumentValidationErrors(int argc, char **args);
+
+dict_t *german_base_dict;
+dict_t *german_additional_dict;
+dict_t *english_base_dict;
+dict_t *english_additional_dict;
+
 int main(int argc, char **argv) {
-  dict_t *g = importDict(BASE_DICT_NAME, GERMAN);
-  dict_t *e = importDict(BASE_DICT_NAME, ENGLISH);
+  if (baseDictErrors(argv[0]) || cmdArgumentValidationErrors(argc, argv)) {
+    return EXIT_FAILURE;
+  }
 
-  printDict(g);
-  printDict(e);
+  german_base_dict = importDict(BASE_DICT_NAME, GERMAN);
+  english_base_dict = importDict(BASE_DICT_NAME, ENGLISH);
 
-  dict_t *t = lookup(g, argc > 1 ? argv[1] : "");
-  printDict(t);
+  printDict(german_base_dict);
+  printDict(english_base_dict);
 
-  exportDict(g, BASE_DICT_NAME);
+  exportDict(german_base_dict, BASE_DICT_NAME);
 
-  deleteDict(g);
-  deleteDict(e);
+  deleteDict(german_base_dict);
+  deleteDict(english_base_dict);
 
   return EXIT_SUCCESS;
+}
+
+int baseDictErrors(char *program_name) {
+  if (access(BASE_DICT_NAME, F_OK)) {
+    fprintf(stderr, "%s: file %s does not exist. Creating %s...\n",
+            program_name, BASE_DICT_NAME, BASE_DICT_NAME);
+    char *touch_file_command = malloc(strlen(BASE_DICT_NAME) + 8);
+    if (touch_file_command) {
+      sprintf(touch_file_command, "touch %s", BASE_DICT_NAME);
+    }
+    if (system(touch_file_command)) {
+      fprintf(stderr, "Could not create file %s\n", BASE_DICT_NAME);
+    }
+    return FAIL;
+  }
+  return OK;
+}
+
+int cmdArgumentValidationErrors(int argc, char **args) {
+  if (argc < 2) {
+    return 0;
+  } else if (access(args[1], F_OK) == 0) {
+    german_additional_dict = importDict(args[1], GERMAN);
+    english_additional_dict = importDict(args[1], ENGLISH);
+    return german_additional_dict && english_additional_dict;
+  } else if (argc % 2) {
+    german_additional_dict = createDict(
+        GERMAN, "Additional words supplied through the command line");
+    english_additional_dict = createDict(
+        ENGLISH, "Additional words supplied through the command line");
+    for (int i = 1; i < argc + 1; i += 2) {
+      insertEntryStr(german_additional_dict, args[i], args[i + 1]);
+      insertEntryStr(english_additional_dict, args[i], args[i + 1]);
+    }
+  }
+  return 1;
 }
