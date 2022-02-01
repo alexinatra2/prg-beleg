@@ -1,3 +1,5 @@
+// TODO refactor
+
 #include "dict.h"
 #include "dictIO.h"
 #include "entry.h"
@@ -12,8 +14,6 @@
 
 #ifndef CONSTANTS
 #define CONSTANTS
-#define OK 0
-#define FAIL 1
 #define BUF_SIZE 128
 #endif // !CONSTANTS
 
