@@ -69,6 +69,8 @@ int main(int argc, char **argv) {
 
   deleteDict(german_base_dict);
   deleteDict(english_base_dict);
+  deleteDict(german_additional_dict);
+  deleteDict(english_additional_dict);
 
   return EXIT_SUCCESS;
 }
