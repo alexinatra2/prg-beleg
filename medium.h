@@ -14,6 +14,7 @@ int lendMediumTo(medium_t *medium, char *borrower);
 char *mediumToString(medium_t *medium);
 
 medium_type_e mediumTypeOf(medium_t *medium);
+char *titleOf(medium_t *medium);
 char *borrowerOf(medium_t *medium);
 char *artistOf(medium_t *medium);
 
