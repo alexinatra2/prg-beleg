@@ -13,6 +13,9 @@ int removeMedium(lib_t *lib, medium_t *medium);
 
 lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string);
 
+int resetToRoot(lib_t *lib);
+int iterate(lib_t *lib);
+
 char *libToString(lib_t *lib);
 
 #endif // !LIBRARY_H
