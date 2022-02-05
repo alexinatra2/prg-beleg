@@ -56,6 +56,7 @@ int lendMediumTo(medium_t *medium, char *borrower) {
   if (!medium || !borrower) {
     return 0;
   }
+  free(medium->borrower);
   medium->borrower = malloc(strlen(borrower) + 1);
   if (medium->borrower) {
     strcpy(medium->borrower, borrower);
