@@ -52,7 +52,16 @@ int deleteMedium(medium_t *medium) {
   return 1;
 }
 
-int lendMediumTo(medium_t *medium, char *borrower);
+int lendMediumTo(medium_t *medium, char *borrower) {
+  if (!medium || !borrower) {
+    return 0;
+  }
+  medium->borrower = malloc(strlen(borrower) + 1);
+  if (medium->borrower) {
+    strcpy(medium->borrower, borrower);
+  }
+  return 1;
+}
 
 char *mediumTypeToString(medium_type_e medium_type) {
   switch (medium_type) {
