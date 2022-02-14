@@ -18,6 +18,7 @@ char *titleOf(medium_t *medium);
 char *borrowerOf(medium_t *medium);
 char *artistOf(medium_t *medium);
 
+int compareOn(medium_t *medium1, medium_t *medium2, filter_type_e filter_type);
 int compareOnMediumType(medium_t *medium1, medium_t *medium2);
 int compareOnTitle(medium_t *medium1, medium_t *medium2);
 int compareOnBorrower(medium_t *medium1, medium_t *medium2);
