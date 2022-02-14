@@ -9,7 +9,7 @@
 #define CD_STR "cd"
 #define NO_TITLE_STR "no title"
 #define UNKNOWN_ARTIST_STR "unknown"
-#define NO_BORROWER_STR "nobody"
+#define NO_BORROWER_STR "-"
 
 typedef struct medium {
   medium_type_e medium_type;
@@ -113,3 +113,34 @@ char *borrowerOf(medium_t *medium) {
 }
 
 char *artistOf(medium_t *medium) { return medium->artist; }
+
+int compareOnTitle(medium_t *medium1, medium_t *medium2) {
+  if (!medium1 || !medium2) {
+    return 0;
+  }
+  return strcmp(medium1->title, medium2->title);
+}
+
+int compareOnMediumType(medium_t *medium1, medium_t *medium2) {
+  if (!medium1 || !medium2) {
+    return 0;
+  }
+  return medium1->medium_type == medium2->medium_type ?
+    compareOnTitle(medium1, medium2) :
+    medium1->medium_type < medium2->medium_type ?
+    -1 : 1;
+}
+
+int compareOnBorrower(medium_t *medium1, medium_t *medium2) {
+  if (!medium1 || !medium2) {
+    return 0;
+  }
+  return strcmp(medium1->borrower, medium2->borrower);
+}
+
+int compareOnArtist(medium_t *medium1, medium_t *medium2) {
+  if (!medium1 || !medium2) {
+    return 0;
+  }
+  return strcmp(medium1->artist, medium2->artist);
+}

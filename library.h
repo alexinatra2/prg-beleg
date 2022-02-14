@@ -5,7 +5,7 @@
 
 typedef struct lib lib_t;
 
-lib_t *createLib(void);
+lib_t *createLib(filter_type_e filter_type);
 int deleteLib(lib_t *lib);
 
 int insertMedium(lib_t *lib, medium_t *medium);
