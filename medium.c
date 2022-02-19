@@ -41,6 +41,30 @@ medium_t *createMedium(medium_type_e medium_type, char *medium_title,
   return new_medium;
 }
 
+medium_t *cloneMedium(medium_t *medium) {
+  if (!medium) {
+    return NULL;
+  }
+  medium_t *new_medium = malloc(sizeof(medium_t));
+  if (!new_medium) {
+    return NULL;
+  }
+  new_medium->medium_type = medium->medium_type;
+  new_medium->title = malloc(strlen(medium->title) + 1);
+  if (new_medium->title) {
+    strcpy(new_medium->title, medium->title);
+  }
+  new_medium->artist = malloc(strlen(medium->artist) + 1);
+  if (new_medium->artist) {
+    strcpy(new_medium->artist, medium->artist);
+  }
+  new_medium->borrower = malloc(strlen(medium->borrower) + 1);
+  if (new_medium->borrower) {
+    strcpy(new_medium->borrower, medium->borrower);
+  }
+  return new_medium;
+}
+
 int deleteMedium(medium_t *medium) {
   if (!medium) {
     return 0;
@@ -123,14 +147,14 @@ int compareOnTitle(medium_t *medium1, medium_t *medium2) {
 
 int compareOn(medium_t *medium1, medium_t *medium2, filter_type_e filter_type) {
   switch (filter_type) {
-    case MEDIUM_TYPE:
-      return compareOnMediumType(medium1, medium2);
-    case TITLE:
-      return compareOnTitle(medium1, medium2);
-    case BORROWER:
-      return compareOnBorrower(medium1, medium2);
-    case ARTIST:
-      return compareOnArtist(medium1, medium2);
+  case MEDIUM_TYPE:
+    return compareOnMediumType(medium1, medium2);
+  case TITLE:
+    return compareOnTitle(medium1, medium2);
+  case BORROWER:
+    return compareOnBorrower(medium1, medium2);
+  case ARTIST:
+    return compareOnArtist(medium1, medium2);
   }
 }
 
@@ -138,10 +162,9 @@ int compareOnMediumType(medium_t *medium1, medium_t *medium2) {
   if (!medium1 || !medium2) {
     return 0;
   }
-  return medium1->medium_type == medium2->medium_type ?
-    compareOnTitle(medium1, medium2) :
-    medium1->medium_type < medium2->medium_type ?
-    -1 : 1;
+  return medium1->medium_type == medium2->medium_type
+             ? compareOnTitle(medium1, medium2)
+             : medium1->medium_type < medium2->medium_type ? -1 : 1;
 }
 
 int compareOnBorrower(medium_t *medium1, medium_t *medium2) {

@@ -6,7 +6,9 @@ typedef struct medium medium_t;
 typedef enum { BOOK, CD, DVD } medium_type_e;
 typedef enum { MEDIUM_TYPE, TITLE, BORROWER, ARTIST } filter_type_e;
 
-medium_t *createMedium(medium_type_e medium_type, char *medium_title, char *artist);
+medium_t *createMedium(medium_type_e medium_type, char *medium_title,
+                       char *artist);
+medium_t *cloneMedium(medium_t *medium);
 int deleteMedium(medium_t *medium);
 
 int lendMediumTo(medium_t *medium, char *borrower);
