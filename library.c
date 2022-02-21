@@ -86,7 +86,18 @@ int insertMedium(lib_t *lib, medium_t *medium) {
   return comp != 0;
 }
 
-int lend(lib_t *lib, medium_t *medium, char *borrower) { return 0; }
+int lend(lib_t *lib, medium_t *medium, char *borrower) {
+  if (!lib || !medium || !borrower) {
+    return 0;
+  }
+  resetToRoot(lib);
+  while (lib->current && !compareOnTitle(medium, lib->current->medium) &&
+         !compareOnArtist(medium, lib->current->medium) &&
+         !compareOnMediumType(medium, lib->current->medium)) {
+    iterate(lib);
+  }
+  return lib->current ? lendMediumTo(lib->current->medium, borrower) : 0;
+}
 
 int removeMedium(lib_t *lib, medium_t *medium) { return 0; }
 

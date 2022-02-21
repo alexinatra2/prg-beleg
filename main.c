@@ -18,6 +18,7 @@ int main() {
   lib_t *lib = createLib(MEDIUM_TYPE);
   insertMedium(lib, medium1);
   insertMedium(lib, medium2);
+  lend(lib, medium1, "hans");
   printf("%s\n", libToString(lib));
 
   return 0;
