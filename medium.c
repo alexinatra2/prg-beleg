@@ -103,19 +103,13 @@ char *mediumToString(medium_t *medium) {
   if (!medium) {
     return NULL;
   }
-  char *medium_type_str = mediumTypeToString(medium->medium_type);
-  char *title_str = titleOf(medium);
-  char *artist_str = artistOf(medium);
-  char *borrower_str = borrowerOf(medium);
-  int medium_str_size = strlen(medium_type_str) + strlen(title_str) +
-                        strlen(artist_str) + strlen(borrower_str) + 51;
-  char *medium_str = malloc(medium_str_size);
+  char *medium_str = malloc(114);
   if (!medium_str) {
     return NULL;
   }
-  sprintf(medium_str,
-          "[ medium type: %s | title: %s | artist: %s | lent to: %s ]",
-          medium_type_str, title_str, artist_str, borrower_str);
+  sprintf(medium_str, "%-4s | %-32s | %-32s | %-32s",
+          mediumTypeToString(medium->medium_type), titleOf(medium),
+          artistOf(medium), borrowerOf(medium));
   return medium_str;
 }
 

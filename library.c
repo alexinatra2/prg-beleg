@@ -134,21 +134,23 @@ lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string) {
 
 size_t getLibSize(lib_t *lib) {
   if (!lib || !resetToRoot(lib)) {
-    return 0; // nothing to print
+    return 0;
   }
-  int size = strlen(mediumToString(lib->current->medium));
+  int size = 1;
   while (iterate(lib)) {
-    size += strlen(mediumToString(lib->current->medium)) + 1; // new line
+    size++;
   }
-  return size + 1; // 0 terminated
+  return size;
 }
 
 char *libToString(lib_t *lib) {
-  int size = getLibSize(lib);
-  if (!size) {
-    return NULL;
-  }
-  char *lib_string = malloc(size);
+  char *lib_string = malloc(228);
+  sprintf(lib_string,
+          "TYPE | %-32s | %-32s | %-32s\n"
+          "-----|----------------------------------|---------------------------"
+          "-------|----------------------------------\n",
+          "TITLE", "ARTIST", "LENT TO");
+
   resetToRoot(lib);
   strcat(lib_string, mediumToString(lib->current->medium));
   while (iterate(lib)) {
