@@ -31,13 +31,14 @@ medium_t *createMedium(medium_type_e medium_type, char *medium_title,
   }
   if (!artist || !strcmp(artist, "")) {
     new_medium->artist = malloc(strlen(UNKNOWN_ARTIST_STR) + 1);
-    new_medium->artist = UNKNOWN_ARTIST_STR;
+    strcpy(new_medium->artist, UNKNOWN_ARTIST_STR);
   } else {
     new_medium->artist = malloc(strlen(artist) + 1);
     if (new_medium->artist) {
       strcpy(new_medium->artist, artist);
     }
   }
+  new_medium->borrower = NO_BORROWER_STR;
   return new_medium;
 }
 

@@ -55,6 +55,15 @@ node_t *createNode(medium_t *medium, node_t *next) {
   return new_node;
 }
 
+int deleteNode(node_t *node) {
+  if (!node) {
+    return 0;
+  }
+  deleteMedium(node->medium);
+  free(node);
+  return 0;
+}
+
 int insertMedium(lib_t *lib, medium_t *medium) {
   if (!lib || !medium) {
     return 0;
@@ -99,7 +108,34 @@ int lend(lib_t *lib, medium_t *medium, char *borrower) {
   return lib->current ? lendMediumTo(lib->current->medium, borrower) : 0;
 }
 
-int removeMedium(lib_t *lib, medium_t *medium) { return 0; }
+int removeMedium(lib_t *lib, medium_t *medium) {
+  if (!lib || !medium || !lib->start) {
+    return 0;
+  }
+  int comp = compareOn(medium, lib->start->medium, lib->filter_type);
+  if (!comp) {
+    deleteNode(lib->start);
+    lib->start = lib->start->next;
+  } else {
+    lib->current = lib->start;
+    node_t *previous;
+    // first iteration always works, as initially lib->current = lib->start
+    // and lib->start has been proven to exist
+    do {
+      previous = lib->current;
+      iterate(lib);
+      comp = lib->current
+                 ? compareOn(medium, lib->current->medium, lib->filter_type)
+                 : 1;
+    } while (comp < 0);
+    if (!comp) {
+      node_t *previous_next = lib->current->next;
+      deleteNode(lib->current);
+      previous->next = previous_next;
+    }
+  }
+  return comp == 0;
+}
 
 int resetToRoot(lib_t *lib) { return lib && (lib->current = lib->start); }
 
@@ -144,13 +180,15 @@ size_t getLibSize(lib_t *lib) {
 }
 
 char *libToString(lib_t *lib) {
+  if (!lib->start) {
+    return "";
+  }
   char *lib_string = malloc(228);
   sprintf(lib_string,
           "TYPE | %-32s | %-32s | %-32s\n"
           "-----|----------------------------------|---------------------------"
           "-------|----------------------------------\n",
           "TITLE", "ARTIST", "LENT TO");
-
   resetToRoot(lib);
   strcat(lib_string, mediumToString(lib->current->medium));
   while (iterate(lib)) {
