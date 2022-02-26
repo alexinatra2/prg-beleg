@@ -108,7 +108,28 @@ int iterate(lib_t *lib) {
 }
 
 lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string) {
-  return NULL;
+  if (!lib) {
+    return NULL;
+  }
+  medium_type_e medium_type = DVD;
+  if (filter_type == MEDIUM_TYPE) {
+    if (strcmp(search_string, "book")) {
+      medium_type = BOOK;
+    } else if (strcmp(search_string, "cd")) {
+      medium_type = CD;
+    }
+  }
+  medium_t *medium_dummy =
+      createMedium(medium_type, search_string, search_string);
+  lendMediumTo(medium_dummy, search_string);
+  resetToRoot(lib);
+  lib_t *lookup_lib = createLib(filter_type);
+  do {
+    if (!compareOn(medium_dummy, lib->current->medium, filter_type)) {
+      insertMedium(lookup_lib, lib->current->medium);
+    }
+  } while (iterate(lib));
+  return lookup_lib;
 }
 
 size_t getLibSize(lib_t *lib) {
