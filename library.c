@@ -212,8 +212,8 @@ char *libToString(lib_t *lib) {
   resetToRoot(lib);
   int index = 0;
   do {
-    char *index_string =
-        malloc(8); // 3 characters for index and one for 0 termination
+    // 3 characters for index and one for 0 termination
+    char *index_string = malloc(9);
     sprintf(index_string, "%5d | ", index++);
     strcat(lib_string, index_string);
     strcat(lib_string, mediumToString(lib->current->medium));

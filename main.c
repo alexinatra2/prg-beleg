@@ -32,6 +32,8 @@ int main() {
   artist_lib = importLib(BASE_FILE_NAME, ARTIST);
   borrower_lib = importLib(BASE_FILE_NAME, BORROWER);
   current = medium_type_lib;
+
+  printf("%s\n\n", libToString(current));
   printf("(i)nsert | (r)emove | (l)end/return back | (s)earch | (c)hange "
          "sorting order | (q)uit:\n");
   while (fgets(command_switch, 32, stdin) && command_switch[0] != 'q') {

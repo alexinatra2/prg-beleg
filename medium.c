@@ -125,9 +125,8 @@ char *mediumToCSVString(medium_t *medium) {
   if (!medium_str) {
     return NULL;
   }
-  sprintf(medium_str, "%-4s, %-32s, %-32s, %-32s;",
-          mediumTypeToString(medium->medium_type), titleOf(medium),
-          artistOf(medium), borrowerOf(medium));
+  sprintf(medium_str, "%s, %s, %s, %s", mediumTypeToString(medium->medium_type),
+          titleOf(medium), artistOf(medium), borrowerOf(medium));
   return medium_str;
 }
 
