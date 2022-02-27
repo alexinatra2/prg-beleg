@@ -181,21 +181,26 @@ size_t getLibSize(lib_t *lib) {
 }
 
 char *libToString(lib_t *lib) {
-  if (!lib->start) {
+  if (!lib || !lib->start) {
     return "EMPTY LIBRARY";
   }
-  char *lib_string = malloc(228);
+  char *lib_string = malloc(246);
   sprintf(lib_string,
-          "TYPE | %-32s | %-32s | %-32s\n"
-          "-----|----------------------------------|---------------------------"
-          "-------|----------------------------------\n",
+          "INDEX | TYPE | %-32s | %-32s | %-32s\n"
+          "------|------|----------------------------------|-------------------"
+          "---------------|----------------------------------\n",
           "TITLE", "ARTIST", "LENT TO");
   resetToRoot(lib);
-  strcat(lib_string, mediumToString(lib->current->medium));
-  while (iterate(lib)) {
-    strcat(lib_string, "\n");
+  int index = 0;
+  do {
+    char *index_string =
+        malloc(8); // 3 characters for index and one for 0 termination
+    sprintf(index_string, "%5d | ", index++);
+    strcat(lib_string, index_string);
     strcat(lib_string, mediumToString(lib->current->medium));
-  }
+    strcat(lib_string, "\n");
+  } while (iterate(lib));
+
   char *order;
   switch (lib->filter_type) {
   case MEDIUM_TYPE:
