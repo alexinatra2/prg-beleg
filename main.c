@@ -1,3 +1,13 @@
+/**
+ * @file main.c
+ * @author Alexander Holzknecht (https://github.com/alexinatra2)
+ * @brief the entrypoint
+ * @version 0.1
+ * @date 2022-02-27
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #include "library.h"
 #include "libraryio.h"
 #include "medium.h"

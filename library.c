@@ -1,3 +1,13 @@
+/**
+ * @file library.c
+ * @author Alexander Holzknecht (https://github.com/alexinatra2)
+ * @brief the c file implementing the declared behaviour in library.h
+ * @version 0.1
+ * @date 2022-02-27
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #include "library.h"
 #include "medium.h"
 #include "util.h"
