@@ -18,6 +18,43 @@ typedef struct medium {
   char *borrower;
 } medium_t;
 
+char *trim(char *str) {
+  size_t len = 0;
+  char *frontp = str;
+  char *endp = NULL;
+
+  if (str == NULL) {
+    return NULL;
+  }
+  if (str[0] == '\0') {
+    return str;
+  }
+
+  len = strlen(str);
+  endp = str + len;
+  while (isspace((unsigned char)*frontp)) {
+    ++frontp;
+  }
+  if (endp != frontp) {
+    while (isspace((unsigned char)*(--endp)) && endp != frontp) {
+    }
+  }
+
+  if (frontp != str && endp == frontp)
+    *str = '\0';
+  else if (str + len - 1 != endp)
+    *(endp + 1) = '\0';
+  endp = str;
+  if (frontp != str) {
+    while (*frontp) {
+      *endp++ = *frontp++;
+    }
+    *endp = '\0';
+  }
+
+  return str;
+}
+
 medium_t *createMedium(medium_type_e medium_type, char *medium_title,
                        char *artist) {
   medium_t *new_medium = malloc(sizeof(medium_t));
@@ -25,17 +62,19 @@ medium_t *createMedium(medium_type_e medium_type, char *medium_title,
     return NULL;
   }
   new_medium->medium_type = medium_type;
-  new_medium->title = malloc(strlen(medium_title) + 1);
+  char *trimmed_title = trim(medium_title);
+  new_medium->title = malloc(strlen(trimmed_title) + 1);
   if (new_medium->title) {
-    strcpy(new_medium->title, medium_title);
+    strcpy(new_medium->title, trimmed_title);
   }
-  if (!artist || !strcmp(artist, "")) {
+  char *trimmed_artist = trim(artist);
+  if (!artist || !strcmp(trimmed_artist, "")) {
     new_medium->artist = malloc(strlen(UNKNOWN_ARTIST_STR) + 1);
     strcpy(new_medium->artist, UNKNOWN_ARTIST_STR);
   } else {
-    new_medium->artist = malloc(strlen(artist) + 1);
+    new_medium->artist = malloc(strlen(trimmed_artist) + 1);
     if (new_medium->artist) {
-      strcpy(new_medium->artist, artist);
+      strcpy(new_medium->artist, trimmed_artist);
     }
   }
   new_medium->borrower = NO_BORROWER_STR;
@@ -82,9 +121,10 @@ int lendMediumTo(medium_t *medium, char *borrower) {
     return 0;
   }
   free(medium->borrower);
-  medium->borrower = malloc(strlen(borrower) + 1);
+  char *trimmed_borrower = trim(borrower);
+  medium->borrower = malloc(strlen(trimmed_borrower) + 1);
   if (medium->borrower) {
-    strcpy(medium->borrower, borrower);
+    strcpy(medium->borrower, trimmed_borrower);
   }
   return 1;
 }

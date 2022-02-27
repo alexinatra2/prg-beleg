@@ -114,8 +114,9 @@ int removeMedium(lib_t *lib, medium_t *medium) {
   }
   int comp = compareOn(medium, lib->start->medium, lib->filter_type);
   if (!comp) {
+    node_t *next = lib->start->next;
     deleteNode(lib->start);
-    lib->start = lib->start->next;
+    lib->start = next;
   } else {
     lib->current = lib->start;
     node_t *previous;
@@ -181,7 +182,7 @@ size_t getLibSize(lib_t *lib) {
 
 char *libToString(lib_t *lib) {
   if (!lib->start) {
-    return "";
+    return "EMPTY LIBRARY";
   }
   char *lib_string = malloc(228);
   sprintf(lib_string,

@@ -47,8 +47,49 @@ int main() {
       break;
     }
     case 'r':
+      printf("input medium type (c - CD / d - DVD / b - book): \n");
+      fgets(medium_type_buffer, 32, stdin);
+      medium_type_e medium_type;
+      switch (medium_type_buffer[0]) {
+      case 'c':
+        medium_type = CD;
+        break;
+      case 'd':
+        medium_type = DVD;
+        break;
+      default:
+        medium_type = BOOK;
+        break;
+      }
+      printf("input title: \n");
+      fgets(title_buffer, 32, stdin);
+      printf("input artist: \n");
+      fgets(artist_buffer, 32, stdin);
+      medium_t *new_medium =
+          createMedium(medium_type, title_buffer, artist_buffer);
+      removeMedium(medium_type_lib, new_medium) &&
+          removeMedium(title_lib, new_medium) &&
+          removeMedium(artist_lib, new_medium) &&
+          removeMedium(borrower_lib, new_medium);
       break;
-    case 's':
+    case 'l':
+      break;
+    case 'c':
+      fgets(command_switch, 32, stdin);
+      switch (command_switch[0]) {
+      case MEDIUM_TYPE:
+        current = medium_type_lib;
+        break;
+      case TITLE:
+        current = medium_type_lib;
+        break;
+      case ARTIST:
+        current = artist_lib;
+        break;
+      case BORROWER:
+        current = borrower_lib;
+        break;
+      }
       break;
     default:
       break;
