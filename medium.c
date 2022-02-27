@@ -27,9 +27,14 @@ medium_t *createMedium(medium_type_e medium_type, char *medium_title,
   }
   new_medium->medium_type = medium_type;
   char *trimmed_title = trim(medium_title);
-  new_medium->title = malloc(strlen(trimmed_title) + 1);
-  if (new_medium->title) {
-    strcpy(new_medium->title, trimmed_title);
+  if (!medium_title || !strcmp(trimmed_title, "")) {
+    new_medium->title = malloc(strlen(NO_TITLE_STR) + 1);
+    strcpy(new_medium->title, NO_TITLE_STR);
+  } else {
+    new_medium->title = malloc(strlen(trimmed_title) + 1);
+    if (new_medium->title) {
+      strcpy(new_medium->title, trimmed_title);
+    }
   }
   char *trimmed_artist = trim(artist);
   if (!artist || !strcmp(trimmed_artist, "")) {
@@ -178,7 +183,7 @@ int compareOnTitle(medium_t *medium1, medium_t *medium2) {
   if (!medium1 || !medium2) {
     return 0;
   }
-  return strcmp(medium1->title, medium2->title);
+  return strcicmp(medium1->title, medium2->title);
 }
 
 int compareOnMediumType(medium_t *medium1, medium_t *medium2) {
@@ -194,14 +199,14 @@ int compareOnBorrower(medium_t *medium1, medium_t *medium2) {
   if (!medium1 || !medium2) {
     return 0;
   }
-  return strcmp(medium1->borrower, medium2->borrower);
+  return strcicmp(medium1->borrower, medium2->borrower);
 }
 
 int compareOnArtist(medium_t *medium1, medium_t *medium2) {
   if (!medium1 || !medium2) {
     return 0;
   }
-  return strcmp(medium1->artist, medium2->artist);
+  return strcicmp(medium1->artist, medium2->artist);
 }
 
 int compareOn(medium_t *medium1, medium_t *medium2, filter_type_e filter_type) {
