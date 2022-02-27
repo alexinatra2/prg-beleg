@@ -95,21 +95,37 @@ int insertMedium(lib_t *lib, medium_t *medium) {
   return comp != 0;
 }
 
-int lend(lib_t *lib, medium_t *medium, char *borrower) {
-  if (!lib || !medium || !borrower) {
+size_t getLibSize(lib_t *lib) {
+  if (!lib || !resetToRoot(lib)) {
     return 0;
   }
-  resetToRoot(lib);
-  while (lib->current && !compareOnTitle(medium, lib->current->medium) &&
-         !compareOnArtist(medium, lib->current->medium) &&
-         !compareOnMediumType(medium, lib->current->medium)) {
-    iterate(lib);
+  int size = 1;
+  while (iterate(lib)) {
+    size++;
   }
-  return lib->current ? lendMediumTo(lib->current->medium, borrower) : 0;
+  return size;
+}
+
+int lend(lib_t *lib, int index, char *borrower) {
+  if (!lib || !lib->start || index < 0 || index > getLibSize(lib)) {
+    return 0;
+  }
+  if (index == 0) {
+    lendMediumTo(lib->start->medium, borrower);
+  } else {
+    resetToRoot(lib);
+    for (int i = 0; i < index; i++) {
+      if (!iterate(lib)) {
+        return 0;
+      }
+    }
+    lendMediumTo(lib->current->medium, borrower);
+  }
+  return 1;
 }
 
 int removeMedium(lib_t *lib, int index) {
-  if (!lib || !lib->start || index < 0) {
+  if (!lib || !lib->start || index < 0 || index > getLibSize(lib)) {
     return 0;
   }
   if (index == 0) {
@@ -161,17 +177,6 @@ lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string) {
     }
   } while (iterate(lib));
   return lookup_lib;
-}
-
-size_t getLibSize(lib_t *lib) {
-  if (!lib || !resetToRoot(lib)) {
-    return 0;
-  }
-  int size = 1;
-  while (iterate(lib)) {
-    size++;
-  }
-  return size;
 }
 
 char *libToString(lib_t *lib) {

@@ -1,6 +1,7 @@
 #include "cgi.h"
 #include "library.h"
 #include "medium.h"
+#include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -91,6 +92,19 @@ void handleRemoving() {
       removeMedium(artist_lib, index) && removeMedium(borrower_lib, index);
 }
 
+void handleLending() {
+  printf("input index of the medium to lend to somebody:\n");
+  fgets(command_switch, 32, stdin);
+  int index = atoi(command_switch);
+  printf("input the name of the person to lend the medium to or blank to "
+         "return the medium:\n");
+  fgets(borrower_buffer, 32, stdin);
+  lend(medium_type_lib, index, borrower_buffer) &&
+      lend(title_lib, index, borrower_buffer) &&
+      lend(artist_lib, index, borrower_buffer) &&
+      lend(borrower_lib, index, borrower_buffer);
+}
+
 void handleChangingOrder() {
   printf("(m)edium type | (b)orrower | (t)itle | (a)rtist:\n");
   fgets(command_switch, 32, stdin);
@@ -110,5 +124,3 @@ void handleChangingOrder() {
 }
 
 void handleSearching() {}
-
-void handleLending() {}
