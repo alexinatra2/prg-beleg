@@ -196,5 +196,22 @@ char *libToString(lib_t *lib) {
     strcat(lib_string, "\n");
     strcat(lib_string, mediumToString(lib->current->medium));
   }
+  char *order;
+  switch (lib->filter_type) {
+  case MEDIUM_TYPE:
+    order = "medium type";
+    break;
+  case TITLE:
+    order = "title";
+    break;
+  case ARTIST:
+    order = "artist";
+    break;
+  default:
+    order = "borrower";
+    break;
+  }
+  strcat(lib_string, "\n\nordered by ");
+  strcat(lib_string, order);
   return lib_string;
 }
