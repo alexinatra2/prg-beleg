@@ -1,6 +1,6 @@
 #include "library.h"
-
 #include "medium.h"
+#include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -154,28 +154,48 @@ int iterate(lib_t *lib) {
   return lib && lib->current && (lib->current = lib->current->next);
 }
 
-lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string) {
-  if (!lib) {
+medium_t *currentMedium(lib_t *lib) {
+  if (!lib || !lib->current) {
     return NULL;
   }
-  medium_type_e medium_type = DVD;
-  if (filter_type == MEDIUM_TYPE) {
-    if (strcmp(search_string, "book")) {
-      medium_type = BOOK;
-    } else if (strcmp(search_string, "cd")) {
-      medium_type = CD;
-    }
+  return lib->current->medium;
+}
+
+lib_t *lookup(lib_t *lib, char *search_string) {
+  if (!lib || !search_string) {
+    return NULL;
   }
-  medium_t *medium_dummy =
-      createMedium(medium_type, search_string, search_string);
-  lendMediumTo(medium_dummy, search_string);
+  lib_t *lookup_lib = createLib(lib->filter_type);
+  char *trimmed_search_string = trim(search_string);
   resetToRoot(lib);
-  lib_t *lookup_lib = createLib(filter_type);
-  do {
-    if (!compareOn(medium_dummy, lib->current->medium, filter_type)) {
-      insertMedium(lookup_lib, lib->current->medium);
+  medium_type_e medium_type = stringToMediumType(trimmed_search_string);
+  medium_t *current;
+  while (lib->current) {
+    current = lib->current->medium;
+    switch (lib->filter_type) {
+    case MEDIUM_TYPE:
+      if (medium_type == mediumTypeOf(current)) {
+        insertMedium(lookup_lib, current);
+      }
+      break;
+    case TITLE:
+      if (strcmp(trimmed_search_string, titleOf(current))) {
+        insertMedium(lookup_lib, current);
+      }
+      break;
+    case ARTIST:
+      if (strcmp(trimmed_search_string, artistOf(current))) {
+        insertMedium(lookup_lib, current);
+      }
+      break;
+    case BORROWER:
+      if (strcmp(trimmed_search_string, borrowerOf(current))) {
+        insertMedium(lookup_lib, current);
+      }
+      break;
     }
-  } while (iterate(lib));
+    iterate(lib);
+  }
   return lookup_lib;
 }
 
@@ -215,7 +235,7 @@ char *libToString(lib_t *lib) {
     order = "borrower";
     break;
   }
-  strcat(lib_string, "\n\nordered by ");
+  strcat(lib_string, "\nordered by ");
   strcat(lib_string, order);
   return lib_string;
 }

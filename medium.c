@@ -84,7 +84,6 @@ int lendMediumTo(medium_t *medium, char *borrower) {
   if (!medium || !borrower) {
     return 0;
   }
-  free(medium->borrower);
   char *trimmed_borrower = trim(borrower);
   medium->borrower = malloc(strlen(trimmed_borrower) + 1);
   if (medium->borrower) {
@@ -118,7 +117,41 @@ char *mediumToString(medium_t *medium) {
   return medium_str;
 }
 
-medium_type_e mediumTypeOf(medium_t *medium);
+char *mediumToCSVString(medium_t *medium) {
+  if (!medium) {
+    return NULL;
+  }
+  char *medium_str = malloc(108);
+  if (!medium_str) {
+    return NULL;
+  }
+  sprintf(medium_str, "%-4s, %-32s, %-32s, %-32s;",
+          mediumTypeToString(medium->medium_type), titleOf(medium),
+          artistOf(medium), borrowerOf(medium));
+  return medium_str;
+}
+
+medium_type_e stringToMediumType(char *string) {
+  if (!string) {
+    return BOOK;
+  }
+  switch (string[0]) {
+  case 'c':
+    return CD;
+  case 'd':
+    return DVD;
+  default:
+    return BOOK;
+  }
+}
+
+medium_type_e mediumTypeOf(medium_t *medium) {
+  if (!medium) {
+    return BOOK;
+  }
+  return medium->medium_type;
+}
+
 char *titleOf(medium_t *medium) {
   if (!medium) {
     return NULL;
@@ -135,26 +168,18 @@ char *borrowerOf(medium_t *medium) {
                                                           : NO_BORROWER_STR;
 }
 
-char *artistOf(medium_t *medium) { return medium->artist; }
+char *artistOf(medium_t *medium) {
+  if (!medium) {
+    return NULL;
+  }
+  return medium->artist;
+}
 
 int compareOnTitle(medium_t *medium1, medium_t *medium2) {
   if (!medium1 || !medium2) {
     return 0;
   }
   return strcmp(medium1->title, medium2->title);
-}
-
-int compareOn(medium_t *medium1, medium_t *medium2, filter_type_e filter_type) {
-  switch (filter_type) {
-  case MEDIUM_TYPE:
-    return compareOnMediumType(medium1, medium2);
-  case TITLE:
-    return compareOnTitle(medium1, medium2);
-  case BORROWER:
-    return compareOnBorrower(medium1, medium2);
-  case ARTIST:
-    return compareOnArtist(medium1, medium2);
-  }
 }
 
 int compareOnMediumType(medium_t *medium1, medium_t *medium2) {
@@ -178,4 +203,17 @@ int compareOnArtist(medium_t *medium1, medium_t *medium2) {
     return 0;
   }
   return strcmp(medium1->artist, medium2->artist);
+}
+
+int compareOn(medium_t *medium1, medium_t *medium2, filter_type_e filter_type) {
+  switch (filter_type) {
+  case MEDIUM_TYPE:
+    return compareOnMediumType(medium1, medium2);
+  case TITLE:
+    return compareOnTitle(medium1, medium2);
+  case BORROWER:
+    return compareOnBorrower(medium1, medium2);
+  case ARTIST:
+    return compareOnArtist(medium1, medium2);
+  }
 }

@@ -1,9 +1,12 @@
 #include "cgi.h"
 #include "library.h"
+#include "libraryio.h"
 #include "medium.h"
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#define BASE_FILE_NAME "lib.csv"
 
 void handleInserting();
 void handleRemoving();
@@ -24,10 +27,10 @@ char artist_buffer[32];
 char borrower_buffer[32];
 
 int main() {
-  medium_type_lib = createLib(MEDIUM_TYPE);
-  title_lib = createLib(TITLE);
-  artist_lib = createLib(ARTIST);
-  borrower_lib = createLib(BORROWER);
+  medium_type_lib = importLib(BASE_FILE_NAME, MEDIUM_TYPE);
+  title_lib = importLib(BASE_FILE_NAME, TITLE);
+  artist_lib = importLib(BASE_FILE_NAME, ARTIST);
+  borrower_lib = importLib(BASE_FILE_NAME, BORROWER);
   current = medium_type_lib;
   printf("(i)nsert | (r)emove | (l)end/return back | (s)earch | (c)hange "
          "sorting order | (q)uit:\n");
@@ -44,7 +47,9 @@ int main() {
       break;
     case 's':
       handleSearching();
-      break;
+      printf("(i)nsert | (r)emove | (l)end/return back | (s)earch | (c)hange "
+             "sorting order | (q)uit:\n");
+      continue;
     case 'c':
       handleChangingOrder();
       break;
@@ -55,6 +60,7 @@ int main() {
     printf("(i)nsert | (r)emove | (l)end/return back | (s)earch | (c)hange "
            "sorting order | (q)uit:\n");
   }
+  handleQuitting();
   return 0;
 }
 
@@ -123,4 +129,11 @@ void handleChangingOrder() {
   }
 }
 
-void handleSearching() {}
+void handleSearching() {
+  printf("Enter the term to search for, if this is ordering by medium type, "
+         "type (b - book | c - cd | d - dvd): \n");
+  fgets(command_switch, 32, stdin);
+  printf("%s\n", libToString(lookup(current, command_switch)));
+}
+
+void handleQuitting() { exportLib(medium_type_lib, BASE_FILE_NAME); }

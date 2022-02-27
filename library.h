@@ -12,10 +12,11 @@ int insertMedium(lib_t *lib, medium_t *medium);
 int lend(lib_t *lib, int index, char *borrower);
 int removeMedium(lib_t *lib, int index);
 
-lib_t *lookup(lib_t *lib, filter_type_e filter_type, char *search_string);
+lib_t *lookup(lib_t *lib, char *search_string);
 
 int resetToRoot(lib_t *lib);
 int iterate(lib_t *lib);
+medium_t *currentMedium(lib_t *lib);
 
 char *libToString(lib_t *lib);
 
