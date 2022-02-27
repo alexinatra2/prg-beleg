@@ -108,34 +108,28 @@ int lend(lib_t *lib, medium_t *medium, char *borrower) {
   return lib->current ? lendMediumTo(lib->current->medium, borrower) : 0;
 }
 
-int removeMedium(lib_t *lib, medium_t *medium) {
-  if (!lib || !medium || !lib->start) {
+int removeMedium(lib_t *lib, int index) {
+  if (!lib || !lib->start || index < 0) {
     return 0;
   }
-  int comp = compareOn(medium, lib->start->medium, lib->filter_type);
-  if (!comp) {
-    node_t *next = lib->start->next;
+  if (index == 0) {
+    node_t *second_element = lib->start->next;
     deleteNode(lib->start);
-    lib->start = next;
+    lib->start = second_element;
   } else {
-    lib->current = lib->start;
+    resetToRoot(lib);
     node_t *previous;
-    // first iteration always works, as initially lib->current = lib->start
-    // and lib->start has been proven to exist
-    do {
+    for (int i = 0; i < index; i++) {
       previous = lib->current;
-      iterate(lib);
-      comp = lib->current
-                 ? compareOn(medium, lib->current->medium, lib->filter_type)
-                 : 1;
-    } while (comp < 0);
-    if (!comp) {
-      node_t *previous_next = lib->current->next;
-      deleteNode(lib->current);
-      previous->next = previous_next;
+      if (!iterate(lib)) {
+        return 0;
+      }
     }
+    node_t *previous_next = lib->current->next;
+    deleteNode(lib->current);
+    previous->next = previous_next;
   }
-  return comp == 0;
+  return 1;
 }
 
 int resetToRoot(lib_t *lib) { return lib && (lib->current = lib->start); }

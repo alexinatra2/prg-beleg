@@ -84,29 +84,11 @@ void handleInserting() {
 }
 
 void handleRemoving() {
-  printf("input medium type (c - CD / d - DVD / b - book): \n");
-  fgets(medium_type_buffer, 32, stdin);
-  medium_type_e medium_type;
-  switch (medium_type_buffer[0]) {
-  case 'c':
-    medium_type = CD;
-    break;
-  case 'd':
-    medium_type = DVD;
-    break;
-  default:
-    medium_type = BOOK;
-    break;
-  }
-  printf("input title: \n");
-  fgets(title_buffer, 32, stdin);
-  printf("input artist: \n");
-  fgets(artist_buffer, 32, stdin);
-  medium_t *new_medium = createMedium(medium_type, title_buffer, artist_buffer);
-  removeMedium(medium_type_lib, new_medium) &&
-      removeMedium(title_lib, new_medium) &&
-      removeMedium(artist_lib, new_medium) &&
-      removeMedium(borrower_lib, new_medium);
+  printf("input index to remove from the library:\n");
+  fgets(command_switch, 32, stdin);
+  int index = atoi(command_switch);
+  removeMedium(medium_type_lib, index) && removeMedium(title_lib, index) &&
+      removeMedium(artist_lib, index) && removeMedium(borrower_lib, index);
 }
 
 void handleChangingOrder() {
